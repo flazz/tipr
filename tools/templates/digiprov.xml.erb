@@ -28,7 +28,6 @@
 <%              :L   => "Version of file with local links",      %>
 <%              :M   => "Migrated file"                          %>
 <%                  }                                            %>
-
 <%# Our namespaces to retrieve information from our dip          %>
 <%  xmlns = { "daitss" => "http://www.fcla.edu/dls/md/daitss/" } %>
     <!-- DAITSS events:  
@@ -53,7 +52,8 @@
     <objectCategory><%= @object_category %></objectCategory>
   </object>
   
-<%# Print out each event        %>
+<%# Print out each event         %>
+<% if @events.empty? %><!-- No package level events --><% end %>
 <% @events.each do |e|           %>
   <event>
   

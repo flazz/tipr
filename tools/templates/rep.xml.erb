@@ -16,12 +16,12 @@
 <% myinfo.each_with_index do |e, i| %>
 <%   if not @dip.events(e[:aip_id]).empty? %>
     <digiprovMD ID="digiprov-metadata-<%= i %>">
-      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="digiprov-<%= e[:aip_id] %>.xml"/>
+      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="digiprov-<%= @dip.dfid_map.index(e[:aip_id]).to_s %>.xml"/>
     </digiprovMD>
 <%   end %>
 <% end %>
   </amdSec>
-  
+  <!-- Global files are coming -->  
   <fileSec>
     <fileGrp>
 <% myinfo.each_with_index do |e,i| %>

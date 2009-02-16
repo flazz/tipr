@@ -88,7 +88,7 @@ files.each do |f|
   xml = TIPR.generate_digiprov('digiprov.xml.erb',dip.events(f), 'file')
   
   # bag the file    
-  tipr_bag.add_file("digiprov-#{f}.xml") { |file| file.puts xml }
+  tipr_bag.add_file("digiprov-#{dip.dfid_map.index(f).to_s}.xml") { |file| file.puts xml }
   
   # validate the xml
   if TIPR.validate(xml, premis_1) { |message, flag| puts message }
