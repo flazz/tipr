@@ -6,7 +6,7 @@ require 'time'
 
 class DIP
   
-  attr_reader :rel_path, :ieid, :package_id, :create_date, :original_representation, :current_representation, :migration_map, :dfid_map
+  attr_reader :rel_path, :ieid, :package_id, :create_date, :original_representation, :current_representation, :migration_map, :dfid_map, :global_files_path
   
   NS = {
     'mets' => 'http://www.loc.gov/METS/',
@@ -17,7 +17,9 @@ class DIP
   def initialize(path)
     @path = path.chomp('/')     # Strip any trailing /es
     @doc = load_descriptor
+    @global_doc = load_global_descriptor
     @rel_path = load_rel_path
+    @global_files_path = load_global_files_path
     @ieid = load_ieid
     @package_id = load_package_id
     @create_date = load_create_date
@@ -47,10 +49,25 @@ class DIP
     open(descriptor) { |io| Nokogiri::XML io }
   end
   
+  def load_global_descriptor   # For now, we allow nonexistent global file descriptors
+    matches = Dir.glob "#{@path}/*/GFP_*_LOC.xml"
+    raise "Multiple possible global descriptors found" if matches.size > 1
+    descriptor = ( matches.empty? ? nil : matches.first )
+    open(descriptor) { |io| Nokogiri::XML io } if descriptor 
+  end
+  
   def load_rel_path             # includes package_id
     matches = Dir.glob "#{@path}/*/AIP_*_LOC.xml"
     dir = File.dirname(matches.first)
     dir.split("DIPs/").last
+  end
+
+  def load_global_files_path
+    if @global_doc
+      matches = Dir.glob "#{@path}/*/GFP_*_LOC.xml"
+      dir = File.dirname(matches.first)
+      dir.split("DIPs/").last
+    end
   end
 
   def load_ieid
@@ -110,6 +127,21 @@ class DIP
 
   end
   
+  def add_global_files(representation)
+    # add our global files
+    if @global_doc 
+      global_ids = @global_doc.xpath('//mets:file', NS)
+      global_ids.each do |gid|
+        representation.push( { :sha_1 => gid['CHECKSUM'],
+                               :path => gid.xpath('mets:FLocat/@xlink:href', NS).first.content
+                             } )
+      end
+    end
+    
+    representation
+  
+  end
+  
   def load_original_representation
     
     id_list = @doc.xpath('//mets:file', NS)
@@ -119,14 +151,15 @@ class DIP
       id_list = id_list.select { |node| not @migration_map.has_value?(node['ID']) }
     end
     
-    id_list.map do |file_node| 
+    rep = id_list.map do |file_node| 
       {
       	:sha_1 => file_node['CHECKSUM'],
       	:path => file_node.xpath('mets:FLocat/@xlink:href', NS).first.content,
       	:aip_id => file_node['ID']
       }
     end
-
+    
+    add_global_files(rep)
   end
 
   def load_current_representation
@@ -138,7 +171,7 @@ class DIP
       not @migration_map.member?(:"#{file_node['ID']}")
     end
     
-    id_list.map do |file_node| 
+    rep = id_list.map do |file_node| 
       {
         :sha_1 => file_node['CHECKSUM'],
         :path => file_node.xpath('mets:FLocat/@xlink:href', NS).first.content,
@@ -146,6 +179,7 @@ class DIP
       }
     end
     
+    add_global_files(rep)
   end
-  
+    
 end

@@ -79,7 +79,7 @@ tipr_bag.add_file("digiprov.xml") {}
 # generate a list of necessary digiprov files
 ofiles = dip.original_representation.map {|n| n[:aip_id]}
 afiles = dip.current_representation.map {|n| n[:aip_id]}
-fs = ofiles.to_set.union(afiles.to_set)
+fs = ofiles.compact.to_set.union(afiles.compact.to_set)
 
 files = fs.select { |f| not dip.events(f).empty? }
 

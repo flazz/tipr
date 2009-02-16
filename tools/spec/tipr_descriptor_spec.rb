@@ -74,6 +74,8 @@ describe "the tipr descriptor" do
     end
 
     it "should have all divs be ordered" do
+      # Note: This assumes order is assigned from 1..n without skipping
+      #       any integer 
       orders = @divs.select { |div| div['ORDER']}     # Exclude unordered
       o = orders.map { |d| d['ORDER'].to_i }          # Map to ints
       1.upto(@divs.size) { |i| o.should include(i) }  # Verify content

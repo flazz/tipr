@@ -14,19 +14,20 @@
       <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="package-digiprov.xml"/>
     </digiprovMD>
 <% myinfo.each_with_index do |e, i| %>
-<%   if not @dip.events(e[:aip_id]).empty? %>
+<%   if e[:aip_id] and not @dip.events(e[:aip_id]).empty? %>
     <digiprovMD ID="digiprov-metadata-<%= i %>">
       <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="digiprov-<%= @dip.dfid_map.index(e[:aip_id]).to_s %>.xml"/>
     </digiprovMD>
 <%   end %>
 <% end %>
   </amdSec>
-  <!-- Global files are coming -->  
+  <% if @dip.global_files_path.nil? %><!-- No global files in this package --><% end %>  
   <fileSec>
     <fileGrp>
 <% myinfo.each_with_index do |e,i| %>
-      <file ID="file-<%= i %>" <% if not @dip.events(e[:aip_id]).empty? %> ADMID="digiprov-metadata-<%= i %>" <% end %> CHECKSUM="<%= e[:sha_1] %>" CHECKSUMTYPE="SHA-1">
-        <FLocat LOCTYPE="URL" xlink:href="<%= File.join(@dip.rel_path, e[:path]) %>"/>
+<%   file_path = (e[:aip_id].nil? ? @dip.global_files_path : @dip.rel_path) %>
+      <file ID="file-<%= i %>" <% if e[:aip_id] and not @dip.events(e[:aip_id]).empty? %> ADMID="digiprov-metadata-<%= i %>" <% end %> CHECKSUM="<%= e[:sha_1] %>" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="<%= File.join( file_path, e[:path]) %>"/>
       </file>
 <% end %>
     </fileGrp>
