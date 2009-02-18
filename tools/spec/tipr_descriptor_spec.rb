@@ -13,11 +13,11 @@ describe "the tipr descriptor" do
     @dip = DIP.new path
 
     # Generate sha-1 sums for our original and active representations:
-    @orig = TIPR.sha1_pair(TIPR.generate_rep('rep.xml.erb', @dip, 'ORIG'))
-    @active = TIPR.sha1_pair(TIPR.generate_rep('rep.xml.erb', @dip, 'ACTIVE'))
+    @orig = TIPR.sha1_pair(TIPR.generate_rep(@dip, 'ORIG'))
+    @active = TIPR.sha1_pair(TIPR.generate_rep(@dip, 'ACTIVE'))
 
     # need the tipr.xml template
-    raw_xml = TIPR.generate_tipr_envelope('tipr.xml.erb', @dip, @orig, @active)
+    raw_xml = TIPR.generate_tipr_envelope(@dip, @orig, @active)
     @doc = Nokogiri::XML raw_xml   
 
     # some additional instance variables to help clean up the code 

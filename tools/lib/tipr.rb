@@ -20,21 +20,21 @@ module TIPR
   # Generates representation xml from a template, dip, and the 
   # representation type
 
-  def self.generate_rep(template, dip, rep)
+  def self.generate_rep(dip, rep)
     @dip = dip
     @type = rep
-    gen_xml(template)
+    gen_xml('rep.xml.erb')
   end
   
   # Generates the tipr envelope xml from a template, dip, and
   # original and active representations (xml + checksum)
   # In the future, this should be fixed to only require checksums
 
-  def self.generate_tipr_envelope(template, dip, orig, active)
+  def self.generate_tipr_envelope(dip, orig, active)
     @dip = dip
     @orig = orig
     @active = active
-    gen_xml(template)
+    gen_xml('tipr.xml.erb')
   end
 
   # Generates digiprov xml for a list of events
@@ -45,11 +45,11 @@ module TIPR
   # object_category should be file, representation, or bitstream 
   # to conform with premis.
     
-  def self.generate_digiprov(template, events, object_category, oid=nil)
+  def self.generate_digiprov(events, object_category, oid=nil)
     @object_category = object_category
     @events = events
     @oid = oid if oid
-    gen_xml(template)
+    gen_xml('digiprov.xml.erb')
   end
   
   # Creates a simple hash of the input file and sha-1 sum.

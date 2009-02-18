@@ -27,11 +27,11 @@ raise "<PATH/TO/TIPR> (#{ARGV[1]}) should exist" if not File.directory? tpath
 dip = DIP.new dpath                # Our DIP
 
 # need original and active representations and their checksums
-orep = TIPR.sha1_pair(TIPR.generate_rep( 'rep.xml.erb', dip, 'ORIG' ))
-arep = TIPR.sha1_pair(TIPR.generate_rep( 'rep.xml.erb', dip, 'ACTIVE' ))
+orep = TIPR.sha1_pair(TIPR.generate_rep(dip, 'ORIG'))
+arep = TIPR.sha1_pair(TIPR.generate_rep(dip, 'ACTIVE'))
 
 # need tipr envelope
-tipr = TIPR.generate_tipr_envelope( 'tipr.xml.erb', dip, orep, arep)
+tipr = TIPR.generate_tipr_envelope(dip, orep, arep)
 
 # our schemas for validation
 mets = LibXML::XML::Schema.new("http://www.loc.gov/standards/mets/mets.xsd")
@@ -85,7 +85,7 @@ files = fs.select { |f| not dip.events(f).empty? }
 
 # bag our digiprov files
 files.each do |f|
-  xml = TIPR.generate_digiprov('digiprov.xml.erb',dip.events(f), 'file')
+  xml = TIPR.generate_digiprov(dip.events(f), 'file')
   
   # bag the file    
   tipr_bag.add_file("digiprov-#{dip.dfid_map.index(f).to_s}.xml") { |file| file.puts xml }
@@ -100,8 +100,7 @@ files.each do |f|
 end
 
 # bag our package digiprov (even if empty)
-xml = TIPR.generate_digiprov('digiprov.xml.erb', dip.events_by_oid(dip.ieid), 
-                             'representation', dip.ieid)
+xml = TIPR.generate_digiprov( dip.events_by_oid(dip.ieid), 'representation', dip.ieid)
 tipr_bag.add_file("package-digiprov.xml") { |file| file.puts xml } 
 if TIPR.validate(xml, premis_1) { |message, flag| puts message }
   puts "package digiprov validates"
