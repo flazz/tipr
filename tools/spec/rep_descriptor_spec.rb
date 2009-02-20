@@ -14,14 +14,15 @@ share_examples_for "all representations" do
     @dip = DIP.new path
 
     # need the rep.xml template
-    raw_xml = TIPR.generate_rep(@dip, @type)
-    @doc = Nokogiri::XML raw_xml   
+    raw_xml = @type=='ORIG'? @dip.original_representation : @dip.current_representation
+    @doc = Nokogiri::XML raw_xml.to_s
 
     # some additional instance variables to help clean up the code 
     @rchildren = @doc.root.children.select { |child| child.name != 'text'}
     @divs = @doc.root.xpath('//mets:structMap/mets:div', NS_MAP)
     @files = @doc.root.xpath('//mets:fileSec//mets:file', NS_MAP)
     @digiprov = @doc.root.xpath('//mets:amdSec/mets:digiprovMD', NS_MAP)
+    @mynum = @type=='ORIG'? 1 : 2
   end
 
   it_should_behave_like AllTiprFiles
@@ -32,8 +33,8 @@ share_examples_for "all representations" do
   
   describe "the amdSec" do
 
-    it "should have one digiprov pertaining to the entire package" do
-      @doc.root.should have_xpath("//mets:amdSec/mets:digiprovMD[@ID='package-digiprov']")
+    it "should have one digiprov pertaining to the entire representation" do
+      @doc.root.should have_xpath("//mets:amdSec/mets:digiprovMD[@ID='rep-#{@mynum}-digiprov']")
     end
     
     describe "each digiprov" do
@@ -67,25 +68,6 @@ share_examples_for "all representations" do
         f['CHECKSUMTYPE'].should eql('SHA-1')
         f.xpath('./mets:FLocat', NS_MAP).first.should reference_a_file      
       end    
-    end
-
-    it "should reference digiprovs for files in the fileSec with digiprov information" do
-          
-      # First grab the representation we want to compare.
-      rep = @type.eql?('ORIG') ? @dip.original_representation : @dip.current_representation
-      
-      # Our indices should be the same as in the xml
-      rep.each_with_index do |r, i|
-        
-        # If there are dip events, there should be an ADMID for this entry and
-        # a related digiprov
-        if not @dip.events(r[:aip_id]).empty?
-          @doc.should have_xpath("//mets:fileSec//mets:file[@ADMID='digiprov-metadata-#{i}']")
-          @doc.should have_xpath("//mets:amdSec/mets:digiprovMD[@ID='digiprov-metadata-#{i}']")
-        end
-      
-      end  
-          
     end
 
   end
