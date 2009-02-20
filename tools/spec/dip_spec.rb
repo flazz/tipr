@@ -35,7 +35,7 @@ describe DIP do
   end
 
   it "should have a way of retrieving digiprovMD events" do
-    @dip.events('FID1').should_not be_nil
+    @dip.events_by_fid('FID1').should_not be_nil
   end
 
 end

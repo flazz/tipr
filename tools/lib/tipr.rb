@@ -20,9 +20,8 @@ module TIPR
   # Generates representation xml from a template, dip, and the 
   # representation type
 
-  def self.generate_rep(dip, rep)
-    @dip = dip
-    @type = rep
+  def self.generate_rep(rep)
+    @rep = rep
     gen_xml('rep.xml.erb')
   end
   
@@ -45,10 +44,10 @@ module TIPR
   # object_category should be file, representation, or bitstream 
   # to conform with premis.
     
-  def self.generate_digiprov(events, object_category, oid=nil)
-    @object_category = object_category
+  def self.generate_digiprov(events, package_id, rep_num)
+    @package_id = package_id
     @events = events
-    @oid = oid if oid
+    @rep_num = rep_num
     gen_xml('digiprov.xml.erb')
   end
   

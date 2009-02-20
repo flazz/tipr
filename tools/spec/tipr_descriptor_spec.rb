@@ -13,8 +13,8 @@ describe "the tipr descriptor" do
     @dip = DIP.new path
 
     # Generate sha-1 sums for our original and active representations:
-    @orig = TIPR.sha1_pair(TIPR.generate_rep(@dip, 'ORIG'))
-    @active = TIPR.sha1_pair(TIPR.generate_rep(@dip, 'ACTIVE'))
+    @orig = TIPR.sha1_pair(@dip.original_representation.to_s)
+    @active = TIPR.sha1_pair(@dip.current_representation.to_s)
 
     # need the tipr.xml template
     raw_xml = TIPR.generate_tipr_envelope(@dip, @orig, @active)

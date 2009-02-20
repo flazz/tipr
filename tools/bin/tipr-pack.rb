@@ -27,8 +27,8 @@ raise "<PATH/TO/TIPR> (#{ARGV[1]}) should exist" if not File.directory? tpath
 dip = DIP.new dpath                # Our DIP
 
 # need original and active representations and their checksums
-orep = TIPR.sha1_pair(TIPR.generate_rep(dip, 'ORIG'))
-arep = TIPR.sha1_pair(TIPR.generate_rep(dip, 'ACTIVE'))
+orep = TIPR.sha1_pair(dip.original_representation.to_s)
+arep = TIPR.sha1_pair(dip.current_representation.to_s)
 
 # need tipr envelope
 tipr = TIPR.generate_tipr_envelope(dip, orep, arep)
@@ -60,7 +60,7 @@ Dir.glob("#{dpath}/**/*") do |f|
   end
 end
 
-# validate our TIPR envelope, and representations
+ validate our TIPR envelope, and representations
 [orep[:xml], arep[:xml], tipr].each do |xml|
   if TIPR.validate(xml, mets) { |message, flag| puts message }
     puts "validated against mets"
@@ -76,19 +76,13 @@ tipr_bag.add_file("tipr.xml") { |file| file.puts tipr }
 tipr_bag.add_file("rights.xml") {}
 tipr_bag.add_file("digiprov.xml") {}
 
-# generate a list of necessary digiprov files
-ofiles = dip.original_representation.map {|n| n[:aip_id]}
-afiles = dip.current_representation.map {|n| n[:aip_id]}
-fs = ofiles.compact.to_set.union(afiles.compact.to_set)
-
-files = fs.select { |f| not dip.events(f).empty? }
-
 # bag our digiprov files
-files.each do |f|
-  xml = TIPR.generate_digiprov(dip.events(f), 'file')
+[dip.original_representation, dip.current_representation].uniq.each_with_index do |r,i|
+
+  xml = TIPR.generate_digiprov(r.events, r.ieid, i+1)
   
   # bag the file    
-  tipr_bag.add_file("digiprov-#{dip.dfid_map.index(f).to_s}.xml") { |file| file.puts xml }
+  tipr_bag.add_file("rep-#{i+1}-digiprov.xml") { |file| file.puts xml }
   
   # validate the xml
   if TIPR.validate(xml, premis_1) { |message, flag| puts message }
@@ -98,16 +92,5 @@ files.each do |f|
   end
    
 end
-
-# bag our package digiprov (even if empty)
-xml = TIPR.generate_digiprov( dip.events_by_oid(dip.ieid), 'representation', dip.ieid)
-tipr_bag.add_file("package-digiprov.xml") { |file| file.puts xml } 
-if TIPR.validate(xml, premis_1) { |message, flag| puts message }
-  puts "package digiprov validates"
-else
-  puts "package digiprov did not validate"
-end
-
-
 
 

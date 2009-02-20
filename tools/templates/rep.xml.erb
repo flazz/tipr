@@ -1,33 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mets xmlns="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
-      OBJID="<%= @dip.ieid %>"
-      LABEL="<%= @dip.package_id %>">
+      OBJID="<%= @rep.ieid %>"
+      LABEL="<%= @rep.package_id %>">
   
-  <metsHdr CREATEDATE="<%= @dip.create_date.xmlschema %>">
+  <metsHdr CREATEDATE="<%= @rep.create_date.xmlschema %>">
     <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
       <name>FCLA</name>
     </agent>
   </metsHdr>
-  <% myinfo = @type=='ORIG'? @dip.original_representation : @dip.current_representation %>
+  <% mynum = @rep.type=='ORIG'? 1 : 2 %>
   <amdSec>
-    <digiprovMD ID="package-digiprov">
-      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="package-digiprov.xml"/>
+    <digiprovMD ID="rep-<%= mynum %>-digiprov">
+      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="rep-<%= mynum %>-digiprov.xml"/>
     </digiprovMD>
-<% myinfo.each_with_index do |e, i| %>
-<%   if e[:aip_id] and not @dip.events(e[:aip_id]).empty? %>
-    <digiprovMD ID="digiprov-metadata-<%= i %>">
-      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="digiprov-<%= @dip.dfid_map.index(e[:aip_id]).to_s %>.xml"/>
-    </digiprovMD>
-<%   end %>
-<% end %>
   </amdSec>
-  <% if @dip.global_files_path.nil? %><!-- No global files in this package --><% end %>  
+  <% if @rep.global_files.nil? %><!-- No global files in this package --><% end %>  
   <fileSec>
     <fileGrp>
-<% myinfo.each_with_index do |e,i| %>
-<%   file_path = (e[:aip_id].nil? ? @dip.global_files_path : @dip.rel_path) %>
-      <file ID="file-<%= i %>" <% if e[:aip_id] and not @dip.events(e[:aip_id]).empty? %> ADMID="digiprov-metadata-<%= i %>" <% end %> CHECKSUM="<%= e[:sha_1] %>" CHECKSUMTYPE="SHA-1">
-        <FLocat LOCTYPE="URL" xlink:href="<%= File.join( file_path, e[:path]) %>"/>
+<% @rep.files.each_with_index do |e,i| %>
+      <file ID="file-<%= i %>" CHECKSUM="<%= e[:sha_1] %>" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="<%= e[:path] %>"/>
       </file>
 <% end %>
     </fileGrp>
@@ -35,7 +27,7 @@
   
   <structMap>
     <div>
-<% myinfo.each_index do |i| %>
+<% @rep.files.each_index do |i| %>
       <fptr FILEID="file-<%= i %>"/>
 <% end %>
     </div>
