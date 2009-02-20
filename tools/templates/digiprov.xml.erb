@@ -4,22 +4,22 @@
 <% require 'nokogiri'                                            %>
 <%# hash of DAITSS event_codes and English translations:         %>
 <%  daitss_events = {                                            %>
-<%              :CPD => "Decrease preservation level",           %>
-<%              :CPU => "Increase preservation level",           %>
-<%              :CV  => "Virus check",                           %>
-<%              :D   => "Disseminate",                           %>
-<%              :DEL => "Deleted a previously ingested file",    %>
-<%              :DLK => "Downloaded link",                       %>
-<%              :FC  => "Fixity Check",                          %>
-<%              :I   => "Ingest",                                %>
-<%              :L   => "Localized",                             %>
-<%              :M   => "Migrated",                              %>
-<%              :N   => "Normalized",                            %>
-<%              :RM  => "Refreshed media",                       %>
-<%              :UNKNOWN => "Unknown event type",                %>
-<%              :VC  => "Verify checksum",                       %>
-<%              :WA  => "Withdraw by affiliate",                 %>
-<%              :WO  => "Withdraw by operator"                   %>
+<%              :CPD => "decrease preservation level",           %>
+<%              :CPU => "increase preservation level",           %>
+<%              :CV  => "virus check",                           %>
+<%              :D   => "disseminate",                           %>
+<%              :DEL => "deleted a previously ingested file",    %>
+<%              :DLK => "downloaded link",                       %>
+<%              :FC  => "fixity Check",                          %>
+<%              :I   => "ingest",                                %>
+<%              :L   => "localized",                             %>
+<%              :M   => "migrated",                              %>
+<%              :N   => "normalized",                            %>
+<%              :RM  => "refreshed media",                       %>
+<%              :UNKNOWN => "unknown event type",                %>
+<%              :VC  => "verify checksum",                       %>
+<%              :WA  => "withdraw by affiliate",                 %>
+<%              :WO  => "withdraw by operator"                   %>
 <%                  }                                            %>
 <%                                                               %>
 <%# hash of roles for linked events                              %>
@@ -36,25 +36,41 @@
            <%= "#{a[0]}:" + " #{a[1]}" %>
 <% end %>
      -->
-
+     
+<%# Print out our representation %>
+  <!-- Representation object -->
   <object>
     <objectIdentifier>
       <objectIdentifierType>DAITSS</objectIdentifierType>
       <objectIdentifierValue>
         <!-- daitss:OID -->
-<% if @events.empty? %>
-        <%= @oid %>
-<% else %>
-        <%= @events.first.xpath("daitss:OID", xmlns).first.content  %>
-<% end %>
+        <%= "#{@package_id}-rep-#{@rep_num}" %>
       </objectIdentifierValue>
     </objectIdentifier>
-    <objectCategory><%= @object_category %></objectCategory>
+    <objectCategory>representation</objectCategory>
   </object>
   
-<%# Print out each event         %>
-<% if @events.empty? %><!-- No package level events --><% end %>
-<% @events.each do |e|           %>
+<%# Print out file objects      %>
+  <!-- File objects -->
+<% @events.each do |event| %>
+<%   if event.first.xpath("daitss:OID", xmlns).first.content.strip != @package_id %>
+<%     oid = event.first.xpath("daitss:OID", xmlns).first.content    %>
+  <object>
+    <objectIdentifier>
+      <objectIdentifierType>DAITSS</objectIdentifierType>
+      <objectIdentifierValue>
+        <!-- daitss:OID -->
+        <%= oid %>
+      </objectIdentifierValue>
+    </objectIdentifier>
+    <objectCategory>file</objectCategory>
+  </object>
+<%  end %>
+<% end %>
+
+<%# Print out events       %>
+<% @events.each do |event| %>
+<%   event.each do |e|     %>
   <event>
   
     <!-- Converted from DAITSS schema -->
@@ -94,6 +110,25 @@
       </eventOutcomeDetail>
     </eventOutcomeInformation>
 
+  <!-- Related File Object -->
+  <linkingObjectIdentifier>
+    <linkingObjectIdentifierType>DAITSS</linkingObjectIdentifierType>
+    <linkingObjectIdentifierValue>
+      <%= e.xpath("./daitss:OID", xmlns).first.content %>
+    </linkingObjectIdentifierValue>
+  </linkingObjectIdentifier>
+  
+<% if not e.xpath("./daitss:OID", xmlns).first.content.strip == @package_id %>
+  <!-- Related Representation Object -->
+  <linkingObjectIdentifier>
+    <linkingObjectIdentifierType>DAITSS</linkingObjectIdentifierType>
+    <linkingObjectIdentifierValue>
+      <%= "#{@package_id}-rep-#{@rep_num}" %>
+    </linkingObjectIdentifierValue>
+      <linkingObjectIdentifierRole>associated representation</linkingObjectIdentifierRole>
+  </linkingObjectIdentifier>
+<% end %>
+  
 <% if not e.xpath("./daitss:REL_OID", xmlns).empty? %>
   <linkingObjectIdentifier>
     <linkingObjectIdentifierType>DAITSS</linkingObjectIdentifierType>
@@ -101,15 +136,16 @@
       <!-- daitss:REL_OID -->
       <%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
     </linkingObjectIdentifierValue>
-<%# Only for premis v2:    <linkingObjectIdentifierRole>     %>
-<%#                          <!-- A nice description of the related file's role %> 
-<%#                               FIXME: check to make sure we address all potential relationships %>
-<%#                          --> %>
-<%#                          <%= daitss_roles[:"#{e.xpath('./daitss:EVENT_TYPE', xmlns).first.content}"] %>
-<%#                        </linkingObjectIdentifierRole>   %>
+      <linkingObjectIdentifierRole>
+        <!-- A nice description of the related file's role
+             FIXME: check to make sure we address all potential relationships
+          -->
+        <%= daitss_roles[:"#{e.xpath('./daitss:EVENT_TYPE', xmlns).first.content}"] %>
+      </linkingObjectIdentifierRole>
   </linkingObjectIdentifier>
-<% end %>  
+<%     end %>  
   </event>
+<%   end %>
 <% end %> 
 
 </premis>
