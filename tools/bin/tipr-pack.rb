@@ -35,8 +35,8 @@ tipr = TIPR.generate_tipr_envelope(dip, orep, arep)
 
 # our schemas for validation
 mets = LibXML::XML::Schema.new("http://www.loc.gov/standards/mets/mets.xsd")
-premis_1 = LibXML::XML::Schema.new("http://www.loc.gov/standards/premis/v1/PREMIS-v1-1.xsd")
-#premis = LibXML::XML::Schema.new("http://www.loc.gov/standards/premis/premis.xsd")
+#premis_1 = LibXML::XML::Schema.new("http://www.loc.gov/standards/premis/v1/PREMIS-v1-1.xsd")
+premis = LibXML::XML::Schema.new("http://www.loc.gov/standards/premis/premis.xsd")
 
 # Create our bag
 bag_path = File.join(tpath, 'tipr_bag')
@@ -60,7 +60,7 @@ Dir.glob("#{dpath}/**/*") do |f|
   end
 end
 
- validate our TIPR envelope, and representations
+# validate our TIPR envelope, and representations
 [orep[:xml], arep[:xml], tipr].each do |xml|
   if TIPR.validate(xml, mets) { |message, flag| puts message }
     puts "validated against mets"
@@ -85,10 +85,10 @@ tipr_bag.add_file("digiprov.xml") {}
   tipr_bag.add_file("rep-#{i+1}-digiprov.xml") { |file| file.puts xml }
   
   # validate the xml
-  if TIPR.validate(xml, premis_1) { |message, flag| puts message }
-    puts "digiprov for #{f} validates"
+  if TIPR.validate(xml, premis) { |message, flag| puts message }
+    puts "digiprov for rep-#{i+1} validates"
   else
-    puts "digiprov for #{f} did not validate" 
+    puts "digiprov for rep-#{i+1} did not validate" 
   end
    
 end
