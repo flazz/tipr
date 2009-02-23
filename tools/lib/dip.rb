@@ -144,6 +144,13 @@ class DIP
 
   end
   
+  # retrieve the DAITSS:FORMAT of the file from the given TechMD ID
+  
+  def file_format(tmd_id, global=false)
+    doc = global ? @global_doc : @doc    
+    doc.xpath("//mets:techMD[@ID = '#{tmd_id}']//daitss:FORMAT", NS).first.content
+  end
+
   def add_global_files(representation)
  
     # add our global files
@@ -152,9 +159,11 @@ class DIP
 
       global_ids.each do |gid|
         global_path = File.join(@global_files_path, gid.xpath('mets:FLocat/@xlink:href', NS).first.content)
-        oid = @global_dfid_map[:"#{gid['ID']}"]        
+        oid = @global_dfid_map[:"#{gid['ID']}"]
+	format = file_format(gid['ADMID'], true)
+	      
         representation.add_global_file( gid['CHECKSUM'], global_path, oid)
-        representation.file_events.push(global_events(oid)) if not global_events(oid).empty?
+        representation.add_file_events(global_events(oid), format) if not global_events(oid).empty?
       end
     end
     
@@ -175,8 +184,10 @@ class DIP
     id_list.each do |file_node| 
       path = File.join(@rel_path, file_node.xpath('mets:FLocat/@xlink:href', NS).first.content)
       oid = @dfid_map[:"#{file_node['ID']}"]
-      rep.add_local_file( file_node['CHECKSUM'], path, oid )
-      rep.file_events.push(events(oid)) if not events(oid).empty?
+      format = file_format(file_node['ADMID'])
+      
+      rep.add_local_file( file_node['CHECKSUM'], path, oid)
+      rep.add_file_events(events(oid), format ) if not events(oid).empty?
     end
     
     add_global_files(rep)
@@ -196,8 +207,10 @@ class DIP
     id_list.each do |file_node|
       path = File.join(@rel_path, file_node.xpath('mets:FLocat/@xlink:href', NS).first.content)
       oid = @dfid_map[:"#{file_node['ID']}"]
-      rep.add_local_file( file_node['CHECKSUM'], path, oid )
-      rep.file_events.push(events(oid)) if not events(oid).empty?
+      format = file_format(file_node['ADMID'])
+      
+      rep.add_local_file( file_node['CHECKSUM'], path, oid)
+      rep.add_file_events(events(oid), format) if not events(oid).empty?
     end
     
     add_global_files(rep)

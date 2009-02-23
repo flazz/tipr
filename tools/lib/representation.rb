@@ -10,8 +10,8 @@ class EventArray < Array
   # Probably worrying overmuch about forcing our array to look the way it should...
   
   def push(element)
-    raise "Expected an array" if element.class != Array   
-    element.each do |e| 
+    raise "Expected a hash" if element.class != Hash   
+    element[:events].each do |e| 
       raise "Expected array of Nokogiri::XML::Node" if not e.kind_of?(Nokogiri::XML::Node)
     end
     super(element)
@@ -62,6 +62,14 @@ alias_method :to_xml, :to_s
   
   def add_local_file(sha1, path, oid)
     @local_files.push( { :sha_1 => sha1, :path => path, :oid => oid })
+  end
+  
+  def add_package_events(event_list, object_format)
+    @package_events.push({ :events => event_list, :object_format => object_format })
+  end
+  
+  def add_file_events(event_list, object_format)
+    @file_events.push({ :events => event_list, :object_format => object_format })
   end
 
 end

@@ -35,6 +35,7 @@ describe Representation do
 </daitss>
 XML
     @events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
+    @event_set = { :events => @events, :object_format => "JPEG" }
 
   end
 
@@ -92,8 +93,8 @@ XML
   end
   
   it "should have a method for combining file events and package-wide events" do
-    @rep.file_events.push(@events)
-    @rep.package_events.push([@events.first])
+    @rep.file_events.push(@event_set)
+    @rep.package_events.push( {:events => @events, :object_format => "TIFF"})
     @rep.events.length.should == 2
   end
   
@@ -126,15 +127,16 @@ describe EventArray do
 </daitss>
 XML
     @events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
+    @event_set = { :events => @events, :object_format => "JPEG" }
     @event_array = EventArray.new
   end
   
   it "should not allow you to add an invalid event" do
     lambda { @event_array.push('hate to say i told you so') }.should raise_error
-    lambda { @event_array.push(@events.push('la di da')) }.should raise_error
+    lambda { @event_array.push(@event_set.push('la di da')) }.should raise_error
   end
   
-  it "should allow you to add an array of Nokogiri::XML::Nodes" do
-    lambda { @event_array.push(@events) }.should_not raise_error
+  it "should allow you to add a hash with an array of Nokogiri::XML::Nodes" do
+    lambda { @event_array.push(@event_set) }.should_not raise_error
   end
 end
