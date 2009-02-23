@@ -1,7 +1,8 @@
  NS_MAP = {
    'daitss' => "http://www.fcla.edu/dls/md/daitss/",
-   'premis' => 'http://www.loc.gov/standards/premis/v1',
-   'mets' => 'http://www.loc.gov/METS/'
+   'premis' => 'info:lc/xmlns/premis-v2',
+   'mets' => 'http://www.loc.gov/METS/',
+   'xsi' => "http://www.w3.org/2001/XMLSchema-instance"
  }
 
  module TIPRMatchers

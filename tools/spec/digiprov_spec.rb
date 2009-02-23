@@ -40,21 +40,24 @@ describe "the file digiprov descriptor" do
 </daitss>
 XML
 
-    @events = [event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a]
-    @premis_schema = "http://www.loc.gov/standards/premis/v1/PREMIS-v1-1.xsd"
+    events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
+    @events = [ {:events => events, :object_format => "JPG"} ]
+#    @premis_schema = "http://www.loc.gov/standards/premis/v1/PREMIS-v1-1.xsd"
+    @premis_schema = "http://www.loc.gov/standards/premis/premis.xsd"
     
     raw_xml = TIPR.generate_digiprov(@events, 'E20090127_AAAAAA', 1)
     @doc = Nokogiri::XML raw_xml, nil, nil, Nokogiri::XML::PARSE_NOBLANKS
   end
 
   it "should be a valid premis document" do
-#    Need to deal with validation using PREMIS 2.0 Commented out for now.
-#    @doc.should have_xpath('premis:premis')
-#    TIPR.validate(@doc.to_xml, LibXML::XML::Schema.new(@premis_schema)).should be_true
+    @doc.should have_xpath('premis:premis')
+    TIPR.validate(@doc.to_xml, LibXML::XML::Schema.new(@premis_schema)).should be_true
   end
 
-  it "should have two objects" do
+  it "should have two objects, one with xsi:type representation, the other with xsi:type file" do
     @doc.xpath('premis:premis/premis:object', NS_MAP).size.should == 2
+    @doc.should have_xpath("premis:premis/premis:object[@xsi:type = 'file']", NS_MAP)
+    @doc.should have_xpath("premis:premis/premis:object[@xsi:type = 'representation']", NS_MAP)
   end
     
   describe "the objects" do
@@ -80,11 +83,6 @@ XML
       @second_object.should have_xpath_with_content('premis:objectIdentifier/premis:objectIdentifierValue', "F20090127_AAAAAA")
     end
 
-    it "should have an objectCategory" do
-      @first_object.should have_xpath_with_content('premis:objectCategory', "representation")
-      @second_object.should have_xpath_with_content('premis:objectCategory', "file")
-    end
-  
   end
   
   it "should have three events" do

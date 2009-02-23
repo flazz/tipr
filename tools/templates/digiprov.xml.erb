@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<premis xmlns="http://www.loc.gov/standards/premis/v1" version="1.1">
+<premis xmlns="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
 
 <% require 'nokogiri'                                            %>
 <%# hash of DAITSS event_codes and English translations:         %>
@@ -39,7 +39,7 @@
      
 <%# Print out our representation %>
   <!-- Representation object -->
-  <object>
+  <object xsi:type="representation">
     <objectIdentifier>
       <objectIdentifierType>DAITSS</objectIdentifierType>
       <objectIdentifierValue>
@@ -47,15 +47,15 @@
         <%= "#{@package_id}-rep-#{@rep_num}" %>
       </objectIdentifierValue>
     </objectIdentifier>
-    <objectCategory>representation</objectCategory>
   </object>
   
 <%# Print out file objects      %>
   <!-- File objects -->
 <% @events.each do |event| %>
-<%   if event.first.xpath("daitss:OID", xmlns).first.content.strip != @package_id %>
-<%     oid = event.first.xpath("daitss:OID", xmlns).first.content    %>
-  <object>
+<%   if event[:events].first.xpath("daitss:OID", xmlns).first.content.strip != @package_id %>
+<%     oid = event[:events].first.xpath("daitss:OID", xmlns).first.content    %>
+<%     format = event[:object_format] %>
+  <object xsi:type="file">
     <objectIdentifier>
       <objectIdentifierType>DAITSS</objectIdentifierType>
       <objectIdentifierValue>
@@ -63,14 +63,21 @@
         <%= oid %>
       </objectIdentifierValue>
     </objectIdentifier>
-    <objectCategory>file</objectCategory>
+    <objectCharacteristics>
+      <compositionLevel>0</compositionLevel>
+      <format>
+        <formatDesignation>
+	  <formatName><%= format %></formatName>
+	</formatDesignation>
+      </format>
+    </objectCharacteristics>
   </object>
 <%  end %>
 <% end %>
 
 <%# Print out events       %>
 <% @events.each do |event| %>
-<%   event.each do |e|     %>
+<%   event[:events].each do |e|     %>
   <event>
   
     <!-- Converted from DAITSS schema -->
@@ -125,7 +132,7 @@
     <linkingObjectIdentifierValue>
       <%= "#{@package_id}-rep-#{@rep_num}" %>
     </linkingObjectIdentifierValue>
-      <linkingObjectIdentifierRole>associated representation</linkingObjectIdentifierRole>
+      <linkingObjectRole>associated representation</linkingObjectRole>
   </linkingObjectIdentifier>
 <% end %>
   
@@ -136,12 +143,12 @@
       <!-- daitss:REL_OID -->
       <%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
     </linkingObjectIdentifierValue>
-      <linkingObjectIdentifierRole>
+      <linkingObjectRole>
         <!-- A nice description of the related file's role
              FIXME: check to make sure we address all potential relationships
           -->
         <%= daitss_roles[:"#{e.xpath('./daitss:EVENT_TYPE', xmlns).first.content}"] %>
-      </linkingObjectIdentifierRole>
+      </linkingObjectRole>
   </linkingObjectIdentifier>
 <%     end %>  
   </event>
