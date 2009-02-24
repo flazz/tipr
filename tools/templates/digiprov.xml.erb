@@ -13,14 +13,12 @@
      -->
      
 <%# Print out our representation %>
+<%# Realistically we need to be more careful about rep_num here %>
   <!-- Representation object -->
   <object xsi:type="representation">
     <objectIdentifier>
-      <objectIdentifierType>DAITSS</objectIdentifierType>
-      <objectIdentifierValue>
-        <!-- daitss:OID -->
-        <%= "#{@package_id}-rep-#{@rep_num}" %>
-      </objectIdentifierValue>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%="#{@rep_num}" %></objectIdentifierValue>
     </objectIdentifier>
   </object>
   
@@ -33,21 +31,18 @@
 <%     format_version = DAITSS_FORMATS[:"#{event[:object_format]}"][:version]%>
   <object xsi:type="file">
     <objectIdentifier>
-      <objectIdentifierType>DAITSS</objectIdentifierType>
-      <objectIdentifierValue>
-        <!-- daitss:OID -->
-        <%= oid %>
-      </objectIdentifierValue>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= oid %></objectIdentifierValue>
     </objectIdentifier>
     <objectCharacteristics>
       <compositionLevel>0</compositionLevel>
       <format>
         <formatDesignation>
-	  <formatName><%= format_name %></formatName>
+	      <formatName><%= format_name %></formatName>
 <% if format_version %>
-      <formatVersion><%= format_version %></formatVersion>
+          <formatVersion><%= format_version %></formatVersion>
 <% end %>
-	</formatDesignation>
+	    </formatDesignation>
       </format>
     </objectCharacteristics>
   </object>
@@ -62,10 +57,10 @@
   
     <!-- Converted from DAITSS schema -->
     <eventIdentifier>
-      <eventIdentifierType>DAITSS</eventIdentifierType>
+      <eventIdentifierType>URI</eventIdentifierType>
       <eventIdentifierValue>
         <!-- daitss:EVENT ID -->
-        <%= e.xpath('./daitss:ID', xmlns).first.content %>
+        info:fcla/daitss/<%= "#{@package_id}" %>/event/<%= e.xpath('./daitss:ID', xmlns).first.content %>
       </eventIdentifierValue>
     </eventIdentifier>
  
@@ -99,27 +94,27 @@
 
   <!-- Related File Object -->
     <linkingObjectIdentifier>
-      <linkingObjectIdentifierType>DAITSS</linkingObjectIdentifierType>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
       <linkingObjectIdentifierValue>
-        <%= e.xpath("./daitss:OID", xmlns).first.content %>
+        info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= e.xpath("./daitss:OID", xmlns).first.content %>
       </linkingObjectIdentifierValue>
     </linkingObjectIdentifier>
 <% if not e.xpath("./daitss:OID", xmlns).first.content.strip == @package_id %>
     <!-- Related Representation Object -->
     <linkingObjectIdentifier>
-      <linkingObjectIdentifierType>DAITSS</linkingObjectIdentifierType>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
       <linkingObjectIdentifierValue>
-        <%= "#{@package_id}-rep-#{@rep_num}" %>
+        info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%="#{@rep_num}" %>
       </linkingObjectIdentifierValue>
         <linkingObjectRole>associated representation</linkingObjectRole>
     </linkingObjectIdentifier>
 <% end %>
 <% if not e.xpath("./daitss:REL_OID", xmlns).empty? %>
     <linkingObjectIdentifier>
-      <linkingObjectIdentifierType>DAITSS</linkingObjectIdentifierType>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
       <linkingObjectIdentifierValue>
         <!-- daitss:REL_OID -->
-        <%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
+        info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
       </linkingObjectIdentifierValue>
         <linkingObjectRole>
           <!-- A nice description of the related file's role
