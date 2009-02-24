@@ -6,6 +6,7 @@
   <metsHdr CREATEDATE="<%= @rep.create_date.xmlschema %>">
     <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
       <name>FCLA</name>
+      <note>tipr-1.0.0</note>
     </agent>
   </metsHdr>
   <% mynum = @rep.type=='ORIG'? 1 : 2 %>
@@ -19,7 +20,7 @@
     <fileGrp>
 <% @rep.files.each_with_index do |e,i| %>
       <file ID="file-<%= i %>" CHECKSUM="<%= e[:sha_1] %>" CHECKSUMTYPE="SHA-1">
-        <FLocat LOCTYPE="URL" xlink:href="<%= e[:path] %>"/>
+        <FLocat LOCTYPE="URL" xlink:href="files/<%= e[:path] %>"/>
       </file>
 <% end %>
     </fileGrp>

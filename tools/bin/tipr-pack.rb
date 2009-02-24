@@ -52,7 +52,7 @@ Dir.glob("#{dpath}/**/*") do |f|
     # our bag path should *start* with "DIP-PACKAGE-ID" (messy)
     d = "#{dpath}".split('/').last # the "DIP-PACKAGE-ID"
     fp = f.split("#{dpath}").last  # the path relative to "DIP-PACKAGE-ID" 
-    my_new_path = File.join(d, fp) # path to use for the bag
+    my_new_path = File.join("files", d, fp) # path to use for the bag
     
     tipr_bag.add_file("#{my_new_path}") do |io|
       io.write my_file.read
