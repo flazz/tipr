@@ -49,12 +49,7 @@ describe "the tipr descriptor" do
     it "should have a rightsMD that references an xml file" do
       @doc.root.xpath('mets:amdSec/mets:rightsMD/mets:mdRef', 
       		NS_MAP).first.should reference_an_xml_file
-    end
-    
-    it "should have a digiprovMD that references an xml file" do
-      @doc.root.xpath('mets:amdSec/mets:digiprovMD/mets:mdRef', 
-      		NS_MAP).first.should reference_an_xml_file
-    end    
+    end 
   end
 
   it "should have a fileSec that points to representation descriptors" do

@@ -74,7 +74,6 @@ tipr_bag.add_file("tipr-rep-1.xml") { |file| file.puts orep[:xml] }
 tipr_bag.add_file("tipr-rep-2.xml") { |file| file.puts arep[:xml] } if orep != arep
 tipr_bag.add_file("tipr.xml") { |file| file.puts tipr }
 tipr_bag.add_file("tipr-rights.xml") {}
-tipr_bag.add_file("digiprov.xml") {}
 
 # bag our digiprov files
 [dip.original_representation, dip.current_representation].uniq.each_with_index do |r,i|
