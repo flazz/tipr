@@ -70,10 +70,10 @@ end
 end
 
 # bag our TIPR files
-tipr_bag.add_file("rep-1.xml") { |file| file.puts orep[:xml] }
-tipr_bag.add_file("rep-2.xml") { |file| file.puts arep[:xml] } if orep != arep
+tipr_bag.add_file("tipr-rep-1.xml") { |file| file.puts orep[:xml] }
+tipr_bag.add_file("tipr-rep-2.xml") { |file| file.puts arep[:xml] } if orep != arep
 tipr_bag.add_file("tipr.xml") { |file| file.puts tipr }
-tipr_bag.add_file("rights.xml") {}
+tipr_bag.add_file("tipr-rights.xml") {}
 tipr_bag.add_file("digiprov.xml") {}
 
 # bag our digiprov files
@@ -82,7 +82,7 @@ tipr_bag.add_file("digiprov.xml") {}
   xml = TIPR.generate_digiprov(r.events, r.ieid, i+1)
   
   # bag the file    
-  tipr_bag.add_file("rep-#{i+1}-digiprov.xml") { |file| file.puts xml }
+  tipr_bag.add_file("tipr-rep-#{i+1}-digiprov.xml") { |file| file.puts xml }
   
   # validate the xml
   if TIPR.validate(xml, premis) { |message, flag| puts message }

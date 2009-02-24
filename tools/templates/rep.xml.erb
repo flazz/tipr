@@ -11,7 +11,7 @@
   <% mynum = @rep.type=='ORIG'? 1 : 2 %>
   <amdSec>
     <digiprovMD ID="rep-<%= mynum %>-digiprov">
-      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="rep-<%= mynum %>-digiprov.xml"/>
+      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="tipr-rep-<%= mynum %>-digiprov.xml"/>
     </digiprovMD>
   </amdSec>
   <% if @rep.global_files.nil? %><!-- No global files in this package --><% end %>  
