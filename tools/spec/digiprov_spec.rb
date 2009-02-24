@@ -41,7 +41,7 @@ describe "the file digiprov descriptor" do
 XML
 
     events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
-    @events = [ {:events => events, :object_format => "JPG"} ]
+    @events = [ {:events => events, :object_format => "IMG_JPEG_JFIF"} ]
 #    @premis_schema = "http://www.loc.gov/standards/premis/v1/PREMIS-v1-1.xsd"
     @premis_schema = "http://www.loc.gov/standards/premis/premis.xsd"
     
