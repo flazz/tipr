@@ -40,13 +40,53 @@ describe "the file digiprov descriptor" do
 </daitss>
 XML
 
+    package_event_doc = Nokogiri::XML <<XML
+<daitss xmlns="http://www.fcla.edu/dls/md/daitss/">
+  <EVENT>
+    <ID>488374</ID>
+    <OID>E20090127_AAAAAA</OID>
+    <EVENT_TYPE>SUB</EVENT_TYPE>
+    <DATE_TIME>2009-01-27 14:30:12</DATE_TIME>
+    <EVENT_PROCEDURE>Package submitted by FIU</EVENT_PROCEDURE>
+    <OUTCOME>SUCCESS</OUTCOME>
+    <NOTE></NOTE>
+  </EVENT>
+  <EVENT>
+    <ID>488375</ID>
+    <OID>E20090127_AAAAAA</OID>
+    <EVENT_TYPE>I</EVENT_TYPE>
+    <DATE_TIME>2009-01-27 14:31:14</DATE_TIME>
+    <EVENT_PROCEDURE>Ingested package from FIU</EVENT_PROCEDURE>
+    <OUTCOME>SUCCESS</OUTCOME>
+    <NOTE></NOTE>
+  </EVENT>
+  <EVENT>
+    <ID>488376</ID>
+    <OID>E20090127_AAAAAA</OID>
+    <EVENT_TYPE>D</EVENT_TYPE>
+    <DATE_TIME>2009-01-27 18:32:19</DATE_TIME>
+    <EVENT_PROCEDURE>Disseminated package to FDA</EVENT_PROCEDURE>
+    <OUTCOME>SUCCESS</OUTCOME>
+    <NOTE></NOTE>
+  </EVENT>
+</daitss>
+XML
+
+
     events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
-    @events = [ {:events => events, :object_format => "IMG_JPEG_JFIF"} ]
+    package_events = package_event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
+    @events = [ {:events => events, :object_format => "IMG_JPEG_JFIF"}, {:events=> package_events} ]
 #    @premis_schema = "http://www.loc.gov/standards/premis/v1/PREMIS-v1-1.xsd"
 #    @premis_schema = "http://www.loc.gov/standards/premis/premis.xsd"
     
-    raw_xml = TIPR.generate_digiprov(@events, 'E20090127_AAAAAA', 1)
+    @agents = { 
+    	        :submission => { :name=>"FIU", :project_code=>252, :type=>"organization" }, 
+                :archive => { :name => "FDA", :project_code => 1, :type => "organization" }
+              }
+    
+    raw_xml = TIPR.generate_digiprov(@events, 'E20090127_AAAAAA', 1, @agents)
     @doc = Nokogiri::XML raw_xml, nil, nil, Nokogiri::XML::PARSE_NOBLANKS
+    
   end
 
   it "should be a valid premis document" do
@@ -86,9 +126,41 @@ XML
     end
 
   end
+
+
+  it "should have two agents" do
+    @doc.xpath('premis:premis/premis:agent', NS_MAP).length.should == 2
+  end
   
-  it "should have three events" do
-    @doc.xpath('/premis:premis/premis:event', NS_MAP).size.should == 3
+  describe "the agent" do
+
+    before(:each) do
+      @agent = @doc.xpath('/premis:premis/premis:agent', NS_MAP).first
+    end
+    
+    it "should have an agentIdentifierType" do
+      @agent.should have_xpath_with_content('premis:agentIdentifier/premis:agentIdentifierType', 'URI')
+    end
+    
+    it "should have an agentIdentifierValue" do
+      @agent.should have_xpath_with_content('premis:agentIdentifier/premis:agentIdentifierValue', 
+                                            "info:fcla/daitss/agent/1")
+    end
+    
+    it "should have an agentName" do
+      @agent.should have_xpath_with_content('premis:agentName', 'FDA')
+    end
+    
+    it "should have an agentType" do
+      @agent.should have_xpath_with_content('premis:agentType', 'organization')
+    end
+  
+  end
+
+
+  
+  it "should have six events" do
+    @doc.xpath('/premis:premis/premis:event', NS_MAP).size.should == 6
   end
 
   describe "the event" do
@@ -132,9 +204,30 @@ XML
       detail.content.should be_empty
     end
     
-    it "should have a related object that points back to the representation object"
-    it "should have a related object that points back to the file object"
+    it "should point back to the representation object" do
+      @event.should have_xpath_with_content('premis:linkingObjectIdentifier/premis:linkingObjectIdentifierValue',
+                                            "info:fcla/daitss/E20090127_AAAAAA/representation/1")
+    end
+    
+    it "should point back to a file object" do
+      @event.should have_xpath_with_content('premis:linkingObjectIdentifier/premis:linkingObjectIdentifierValue',
+                                            "info:fcla/daitss/E20090127_AAAAAA/oid/F20090127_AAAAAA")
+    end
 
   end
+  
+  it "should have a submission event which references the submission agent" do
+    event = @doc.xpath('//premis:eventType[contains(text(), "submission")]', NS_MAP).first
+    event.parent.should have_xpath_with_content('premis:linkingAgentIdentifier/premis:linkingAgentIdentifierValue',
+                                                 'info:fcla/daitss/agent/252')
+    
+  end
+  
+  it "should have an ingest event which references the archival agent" do
+    event = @doc.xpath('//premis:eventType[contains(text(), "ingest")]', NS_MAP).first
+    event.parent.should have_xpath_with_content('premis:linkingAgentIdentifier/premis:linkingAgentIdentifierValue',
+                                                 'info:fcla/daitss/agent/1')
+  end
+  
 
 end

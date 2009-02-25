@@ -50,6 +50,21 @@
 <%  end %>
 <% end %>
 
+<%# Print out agents %>
+
+<% @agents.each_value do |agent| %>
+  <agent>
+    <agentIdentifier>
+      <agentIdentifierType>URI</agentIdentifierType>
+      <agentIdentifierValue>info:fcla/daitss/agent/<%= agent[:project_code] %></agentIdentifierValue>
+    </agentIdentifier>
+    <agentName><%= agent[:name] %></agentName>
+    <agentType><%= agent[:type] %></agentType>
+  </agent>
+
+<% end %>
+
+
 <%# Print out events       %>
 <% @events.each do |event| %>
 <%   event[:events].each do |e|     %>
@@ -124,6 +139,25 @@
         </linkingObjectRole>
     </linkingObjectIdentifier>
 <% end %>
+<% if e.xpath('./daitss:EVENT_TYPE', xmlns).first.content == ("SUB") %>
+    <linkingAgentIdentifier>
+      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
+      <linkingAgentIdentifierValue>
+        <!-- daitss:REL_OID -->
+        info:fcla/daitss/agent/<%= @agents[:submission][:project_code] %>
+      </linkingAgentIdentifierValue>
+    </linkingAgentIdentifier>
+<% end %>
+<% if e.xpath('./daitss:EVENT_TYPE', xmlns).first.content == ("I") %>
+    <linkingAgentIdentifier>
+      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
+      <linkingAgentIdentifierValue>
+        <!-- daitss:REL_OID -->
+        info:fcla/daitss/agent/<%= @agents[:archive][:project_code] %>
+      </linkingAgentIdentifierValue>
+    </linkingAgentIdentifier>
+<% end %>
+
   </event>
 
 <%   end %>

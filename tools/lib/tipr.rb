@@ -69,7 +69,8 @@ DAITSS_EVENTS = {
             :L   => "localized",                         
             :M   => "migrated",                          
             :N   => "normalized",                        
-            :RM  => "refreshed media",                   
+            :RM  => "refreshed media",
+            :SUB => "submission", # we don't really track this, but it will make mocking easier                
             :UNKNOWN => "unknown event type",            
             :VC  => "verify checksum",                   
             :WA  => "withdraw by affiliate",             
@@ -123,10 +124,11 @@ module TIPR
   # object_category should be file, representation, or bitstream 
   # to conform with premis.
     
-  def self.generate_digiprov(events, package_id, rep_num)
+  def self.generate_digiprov(events, package_id, rep_num, agents={})
     @package_id = package_id
     @events = events
     @rep_num = rep_num
+    @agents = agents
     gen_xml('digiprov.xml.erb')
   end
   
