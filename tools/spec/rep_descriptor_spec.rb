@@ -34,7 +34,7 @@ share_examples_for "all representations" do
   describe "the amdSec" do
 
     it "should have one digiprov pertaining to the entire representation" do
-      @doc.root.should have_xpath("//mets:amdSec/mets:digiprovMD[@ID='rep-#{@mynum}-digiprov']")
+      @doc.root.should have_xpath("//mets:amdSec/mets:digiprovMD[@ID='DPMD1']")
     end
     
     describe "each digiprov" do
