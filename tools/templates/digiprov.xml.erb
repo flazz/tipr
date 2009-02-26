@@ -139,22 +139,13 @@
         </linkingObjectRole>
     </linkingObjectIdentifier>
 <% end %>
-<% if e.xpath('./daitss:EVENT_TYPE', xmlns).first.content == ("SUB") %>
+<% event_type = e.xpath('./daitss:EVENT_TYPE', xmlns).first.content %>
+<% my_agent = "submission" if event_type == "SUB" %>
+<% my_agent = "archive" if event_type == "I" %>
+<% if my_agent %>
     <linkingAgentIdentifier>
       <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
-      <linkingAgentIdentifierValue>
-        <!-- daitss:REL_OID -->
-        info:fcla/daitss/agent/<%= @agents[:submission][:project_code] %>
-      </linkingAgentIdentifierValue>
-    </linkingAgentIdentifier>
-<% end %>
-<% if e.xpath('./daitss:EVENT_TYPE', xmlns).first.content == ("I") %>
-    <linkingAgentIdentifier>
-      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
-      <linkingAgentIdentifierValue>
-        <!-- daitss:REL_OID -->
-        info:fcla/daitss/agent/<%= @agents[:archive][:project_code] %>
-      </linkingAgentIdentifierValue>
+      <linkingAgentIdentifierValue>info:fcla/daitss/agent/<%= @agents[:"#{my_agent}"][:project_code] %></linkingAgentIdentifierValue>
     </linkingAgentIdentifier>
 <% end %>
 
