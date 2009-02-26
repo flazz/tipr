@@ -27,6 +27,7 @@ class DIP
     @dfid_map = load_dfid_map
     @global_dfid_map = load_dfid_map(true)
     @migration_map = load_migration_map
+    @submitting_agent = load_submitting_agent
     @original_representation = load_original_representation
     @current_representation = load_current_representation
   end
@@ -144,6 +145,15 @@ class DIP
 
   end
   
+  # Create a hash to represent the submitting agent of this package
+  
+  def load_submitting_agent
+    name = @doc.xpath("//mets:techMD//daitss:AGREEMENT_INFO/@ACCOUNT", NS).first.content
+    project_code = @doc.xpath("//mets:techMD//daitss:ACCOUNT_PROJECT", NS).first.content
+    { :name => name, :project_code => project_code, :type => "organization" }
+  end
+  
+  
   # retrieve the DAITSS:FORMAT of the file from the given TechMD ID
   
   def file_format(tmd_id, global=false)
@@ -172,7 +182,7 @@ class DIP
   
   def load_original_representation
     
-    rep = Representation.new('ORIG', @ieid, @create_date, @package_id)
+    rep = Representation.new('ORIG', @ieid, @create_date, @package_id, @submitting_agent)
     
     id_list = @doc.xpath('//mets:file', NS)
     
@@ -197,7 +207,7 @@ class DIP
   
     return @original_representation if @migration_map.nil? # Original rep is current
     
-    rep = Representation.new('ACTIVE', @ieid, @create_date, @package_id)
+    rep = Representation.new('ACTIVE', @ieid, @create_date, @package_id, @submitting_agent)
     
     # Exclude older files that we've migrated from this representation
     id_list = @doc.xpath('//mets:file', NS).select do |file_node| 

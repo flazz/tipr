@@ -23,13 +23,13 @@ end
 
 class Representation
 
-attr_reader :type, :ieid, :create_date, :package_id, :global_files, :local_files, :file_events, :package_events
+attr_reader :type, :ieid, :create_date, :package_id, :global_files, :local_files, :file_events, :package_events, :agents
 
 alias_method :to_xml, :to_s
 
   # Requires a type ('ORIG' or 'ACTIVE'), ieid, date (dateTime object), and package_id)
   
-  def initialize(type, ieid, date, package_id) 
+  def initialize(type, ieid, date, package_id, submitting_agent) 
     @type = type
     @ieid = ieid
     @create_date = date
@@ -38,6 +38,8 @@ alias_method :to_xml, :to_s
     @local_files = Array.new
     @file_events = EventArray.new
     @package_events = EventArray.new
+    @agents = { :archive => { :name=>"FDA", :project_code=>1, :type=>"organization" }}
+    @agents[:submission] = submitting_agent if submitting_agent and not submitting_agent.empty?
   end
   
   def to_s

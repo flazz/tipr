@@ -6,8 +6,9 @@ require 'tipr'
 
 describe Representation do
   before :all do
+    submitting_agent = { :name => "FIU", :project_code=>252, :type=>"organization"}
     @date = Time.now
-    @rep = Representation.new('ORIG', 'E20081121_AAAAEW', @date,  'FDA0666002')
+    @rep = Representation.new('ORIG', 'E20081121_AAAAEW', @date,  'FDA0666002', submitting_agent)
     @rep_doc = TIPR.generate_rep(@rep)
   end
 
@@ -68,6 +69,10 @@ XML
   it "should have an empty file event array" do
     @rep.file_events.should be_kind_of(EventArray)
     @rep.file_events.should be_empty
+  end
+  
+  it "should have two agents" do
+    @rep.agents.length.should == 2
   end
   
   it "should print out as xml derived from the rep.xml.erb template when to_s is called"  do
