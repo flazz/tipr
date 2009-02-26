@@ -200,6 +200,7 @@ class DIP
       rep.add_file_events(events(oid), format ) if not events(oid).empty?
     end
     
+    rep.add_package_events(events(@ieid), nil)
     add_global_files(rep)
   end
 
@@ -223,6 +224,7 @@ class DIP
       rep.add_file_events(events(oid), format) if not events(oid).empty?
     end
     
+    rep.add_package_events(events(@ieid), nil)
     add_global_files(rep)
   end
     
