@@ -43,7 +43,7 @@ XML
     package_event_doc = Nokogiri::XML <<XML
 <daitss xmlns="http://www.fcla.edu/dls/md/daitss/">
   <EVENT>
-    <ID>488374</ID>
+    <ID>488274</ID>
     <OID>E20090127_AAAAAA</OID>
     <EVENT_TYPE>SUB</EVENT_TYPE>
     <DATE_TIME>2009-01-27 14:30:12</DATE_TIME>
@@ -52,7 +52,7 @@ XML
     <NOTE></NOTE>
   </EVENT>
   <EVENT>
-    <ID>488375</ID>
+    <ID>488275</ID>
     <OID>E20090127_AAAAAA</OID>
     <EVENT_TYPE>I</EVENT_TYPE>
     <DATE_TIME>2009-01-27 14:31:14</DATE_TIME>
@@ -61,7 +61,7 @@ XML
     <NOTE></NOTE>
   </EVENT>
   <EVENT>
-    <ID>488376</ID>
+    <ID>488399</ID>
     <OID>E20090127_AAAAAA</OID>
     <EVENT_TYPE>D</EVENT_TYPE>
     <DATE_TIME>2009-01-27 18:32:19</DATE_TIME>
@@ -144,11 +144,11 @@ XML
     
     it "should have an agentIdentifierValue" do
       @agent.should have_xpath_with_content('premis:agentIdentifier/premis:agentIdentifierValue', 
-                                            "info:fcla/daitss/agent/1")
+                                            "info:fcla/daitss/agent/")
     end
     
     it "should have an agentName" do
-      @agent.should have_xpath_with_content('premis:agentName', 'FDA')
+      @agent.should have_xpath('premis:agentName')
     end
     
     it "should have an agentType" do
