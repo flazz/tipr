@@ -78,7 +78,7 @@ tipr_bag.add_file("tipr-rights.xml") {}
 # bag our digiprov files
 [dip.original_representation, dip.current_representation].uniq.each_with_index do |r,i|
 
-  xml = TIPR.generate_digiprov(r.events, r.ieid, i+1)
+  xml = TIPR.generate_digiprov(r.events, r.ieid, i+1, r.agents)
   
   # bag the file    
   tipr_bag.add_file("tipr-rep-#{i+1}-digiprov.xml") { |file| file.puts xml }
