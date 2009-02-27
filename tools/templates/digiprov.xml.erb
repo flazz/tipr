@@ -50,9 +50,12 @@
 <%  end %>
 <% end %>
 
-<%# Print out agents %>
+<%# Jump through some hoops to print out agents properly %>
 
-<% @agents.each_value do |agent| %>
+<!-- Agents -->
+<% agents = @agents.clone %>
+<% agents.delete(:archive) if agents[:submission] == agents[:archive] %>
+<% agents.each_value do |agent| %>
   <agent>
     <agentIdentifier>
       <agentIdentifierType>URI</agentIdentifierType>

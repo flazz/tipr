@@ -38,7 +38,7 @@ alias_method :to_xml, :to_s
     @local_files = Array.new
     @file_events = EventArray.new
     @package_events = EventArray.new
-    @agents = { :archive => { :name=>"FDA", :project_code=>1, :type=>"organization" }}
+    @agents = { :archive => { :name=>"FDA", :project_code=>"1", :type=>"organization" }}
     @agents[:submission] = submitting_agent if submitting_agent and not submitting_agent.empty?
   end
   
