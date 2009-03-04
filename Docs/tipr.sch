@@ -12,7 +12,7 @@
   <ns prefix="mets" uri="http://www.loc.gov/METS/" />
   <ns prefix="xlink" uri="http://www.w3.org/1999/xlink" />
 
-  <xsl:key name="file_ids" match="//mets:fptr" use="@FILEID"/> 
+  <xsl:key name="file_ids" match="//mets:fptr" use="@FILEID"/>
 
   <pattern name="METS Elements Required by TIPR">
     <rule context = "mets:mets">
@@ -126,7 +126,7 @@
         Representation files should have 'tipr-rep-' prefix
       </assert>
       <assert test="key('file_ids', @ID)">
-        Files should be referenced in the structMap
+        Files in the fileSec should be referenced in the structMap
       </assert>
     </rule>
 
@@ -147,6 +147,12 @@
       <assert test="count(mets:div[not(@ORDER=preceding-sibling::*/@ORDER)])=count(mets:div/@ORDER)">
         No representations should share the same order
       </assert>
+    </rule>
+    
+    <rule context="mets:mets/mets:structMap/mets:div//mets:fptr">
+      <assert test="./@FILEID = //mets:file/@ID">
+        Files referenced in the structMap should exist in the fileSec
+      </assert>      
     </rule>
     
   </pattern>
