@@ -13,11 +13,11 @@ describe "the tipr descriptor" do
     @dip = DIP.new path
 
     # Generate sha-1 sums for our original and active representations:
-    @orig = TIPR.sha1_pair(TIPR.generate_rep('rep.xml.erb', @dip, 'ORIG'))
-    @active = TIPR.sha1_pair(TIPR.generate_rep('rep.xml.erb', @dip, 'ACTIVE'))
+    @orig = TIPR.sha1_pair(@dip.original_representation.to_s)
+    @active = TIPR.sha1_pair(@dip.current_representation.to_s)
 
     # need the tipr.xml template
-    raw_xml = TIPR.generate_tipr_envelope('tipr.xml.erb', @dip, @orig, @active)
+    raw_xml = TIPR.generate_tipr_envelope(@dip, @orig, @active)
     @doc = Nokogiri::XML raw_xml   
 
     # some additional instance variables to help clean up the code 
@@ -49,12 +49,7 @@ describe "the tipr descriptor" do
     it "should have a rightsMD that references an xml file" do
       @doc.root.xpath('mets:amdSec/mets:rightsMD/mets:mdRef', 
       		NS_MAP).first.should reference_an_xml_file
-    end
-    
-    it "should have a digiprovMD that references an xml file" do
-      @doc.root.xpath('mets:amdSec/mets:digiprovMD/mets:mdRef', 
-      		NS_MAP).first.should reference_an_xml_file
-    end    
+    end 
   end
 
   it "should have a fileSec that points to representation descriptors" do
@@ -74,6 +69,8 @@ describe "the tipr descriptor" do
     end
 
     it "should have all divs be ordered" do
+      # Note: This assumes order is assigned from 1..n without skipping
+      #       any integer 
       orders = @divs.select { |div| div['ORDER']}     # Exclude unordered
       o = orders.map { |d| d['ORDER'].to_i }          # Map to ints
       1.upto(@divs.size) { |i| o.should include(i) }  # Verify content

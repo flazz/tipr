@@ -1,74 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<premis xmlns="http://www.loc.gov/standards/premis/v1" version="1.1">
+<premis xmlns="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
 
 <% require 'nokogiri'                                            %>
-<%# hash of DAITSS event_codes and English translations:         %>
-<%  daitss_events = {                                            %>
-<%              :CPD => "Decrease preservation level",           %>
-<%              :CPU => "Increase preservation level",           %>
-<%              :CV  => "Virus check",                           %>
-<%              :D   => "Disseminate",                           %>
-<%              :DEL => "Deleted a previously ingested file",    %>
-<%              :DLK => "Downloaded link",                       %>
-<%              :FC  => "Fixity Check",                          %>
-<%              :I   => "Ingest",                                %>
-<%              :L   => "Localized",                             %>
-<%              :M   => "Migrated",                              %>
-<%              :N   => "Normalized",                            %>
-<%              :RM  => "Refreshed media",                       %>
-<%              :UNKNOWN => "Unknown event type",                %>
-<%              :VC  => "Verify checksum",                       %>
-<%              :WA  => "Withdraw by affiliate",                 %>
-<%              :WO  => "Withdraw by operator"                   %>
-<%                  }                                            %>
-<%                                                               %>
-<%# hash of roles for linked events                              %>
-<%  daitss_roles = {                                             %>
-<%              :DLK => "Local copy of linked file",             %>
-<%              :L   => "Version of file with local links",      %>
-<%              :M   => "Migrated file"                          %>
-<%                  }                                            %>
-
+<% require 'tipr'                                                %>
 <%# Our namespaces to retrieve information from our dip          %>
 <%  xmlns = { "daitss" => "http://www.fcla.edu/dls/md/daitss/" } %>
     <!-- DAITSS events:  
-<% event_array = daitss_events.map { |k, v| ["#{k}", v] } %>
+<% event_array = DAITSS_EVENTS.map { |k, v| ["#{k}", v] } %>
 <% event_array.sort.each do |a| %>
            <%= "#{a[0]}:" + " #{a[1]}" %>
 <% end %>
      -->
-
-  <object>
+     
+<%# Print out our representation %>
+<%# Realistically we need to be more careful about rep_num here %>
+  <!-- Representation object -->
+  <object xsi:type="representation">
     <objectIdentifier>
-      <objectIdentifierType>DAITSS</objectIdentifierType>
-      <objectIdentifierValue>
-        <!-- daitss:OID -->
-<% if @events.empty? %>
-        <%= @oid %>
-<% else %>
-        <%= @events.first.xpath("daitss:OID", xmlns).first.content  %>
-<% end %>
-      </objectIdentifierValue>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%="#{@rep_num}" %></objectIdentifierValue>
     </objectIdentifier>
-    <objectCategory><%= @object_category %></objectCategory>
   </object>
   
-<%# Print out each event        %>
-<% @events.each do |e|           %>
+<%# Print out file objects      %>
+  <!-- File objects -->
+<% @events.each do |event| %>
+<%   if event[:events].first.xpath("daitss:OID", xmlns).first.content.strip != @package_id %>
+<%     oid = event[:events].first.xpath("daitss:OID", xmlns).first.content    %>
+<%     format_name = DAITSS_FORMATS[:"#{event[:object_format]}"][:name]%>
+<%     format_version = DAITSS_FORMATS[:"#{event[:object_format]}"][:version]%>
+  <object xsi:type="file">
+    <objectIdentifier>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= oid %></objectIdentifierValue>
+    </objectIdentifier>
+    <objectCharacteristics>
+      <compositionLevel>0</compositionLevel>
+      <format>
+        <formatDesignation>
+	      <formatName><%= format_name %></formatName>
+<% if format_version %>
+          <formatVersion><%= format_version %></formatVersion>
+<% end %>
+	    </formatDesignation>
+      </format>
+    </objectCharacteristics>
+  </object>
+  
+<%  end %>
+<% end %>
+
+<%# Jump through some hoops to print out agents properly %>
+
+<!-- Agents -->
+<% agents = @agents.clone %>
+<% agents.delete(:archive) if agents[:submission] == agents[:archive] %>
+<% agents.each_value do |agent| %>
+  <agent>
+    <agentIdentifier>
+      <agentIdentifierType>URI</agentIdentifierType>
+      <agentIdentifierValue>info:fcla/daitss/agent/<%= agent[:project_code] %></agentIdentifierValue>
+    </agentIdentifier>
+    <agentName><%= agent[:name] %></agentName>
+    <agentType><%= agent[:type] %></agentType>
+  </agent>
+
+<% end %>
+
+
+<%# Print out events       %>
+<% @events.each do |event| %>
+<%   event[:events].each do |e|     %>
   <event>
   
     <!-- Converted from DAITSS schema -->
     <eventIdentifier>
-      <eventIdentifierType>DAITSS</eventIdentifierType>
+      <eventIdentifierType>URI</eventIdentifierType>
       <eventIdentifierValue>
         <!-- daitss:EVENT ID -->
-        <%= e.xpath('./daitss:ID', xmlns).first.content %>
+        info:fcla/daitss/<%= "#{@package_id}" %>/event/<%= e.xpath('./daitss:ID', xmlns).first.content %>
       </eventIdentifierValue>
     </eventIdentifier>
  
     <eventType>
       <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
-      <%= daitss_events[:"#{e.xpath('./daitss:EVENT_TYPE', xmlns).first.content}"] %>
+      <%= DAITSS_EVENTS[:"#{e.xpath('./daitss:EVENT_TYPE', xmlns).first.content}"] %>
     </eventType>
  
     <eventDateTime>
@@ -84,7 +100,6 @@
     <eventOutcomeInformation>
       <eventOutcome>
         <!-- daitss:OUTCOME -->
-	<!-- fixme: should be a code? -->
         <%= e.xpath("./daitss:OUTCOME", xmlns).first.content %>
       </eventOutcome>
       <eventOutcomeDetail>
@@ -95,22 +110,52 @@
       </eventOutcomeDetail>
     </eventOutcomeInformation>
 
+  <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= e.xpath("./daitss:OID", xmlns).first.content %>
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+<% if not e.xpath("./daitss:OID", xmlns).first.content.strip == @package_id %>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%="#{@rep_num}" %>
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+<% end %>
 <% if not e.xpath("./daitss:REL_OID", xmlns).empty? %>
-  <linkingObjectIdentifier>
-    <linkingObjectIdentifierType>DAITSS</linkingObjectIdentifierType>
-    <linkingObjectIdentifierValue>
-      <!-- daitss:REL_OID -->
-      <%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
-    </linkingObjectIdentifierValue>
-<%# Only for premis v2:    <linkingObjectIdentifierRole>     %>
-<%#                          <!-- A nice description of the related file's role %> 
-<%#                               FIXME: check to make sure we address all potential relationships %>
-<%#                          --> %>
-<%#                          <%= daitss_roles[:"#{e.xpath('./daitss:EVENT_TYPE', xmlns).first.content}"] %>
-<%#                        </linkingObjectIdentifierRole>   %>
-  </linkingObjectIdentifier>
-<% end %>  
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        <!-- daitss:REL_OID -->
+        info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>
+          <!-- A nice description of the related file's role
+               FIXME: check to make sure we address all potential relationships
+            -->
+          <%= DAITSS_ROLES[:"#{e.xpath('./daitss:EVENT_TYPE', xmlns).first.content}"] %>
+        </linkingObjectRole>
+    </linkingObjectIdentifier>
+<% end %>
+<% event_type = e.xpath('./daitss:EVENT_TYPE', xmlns).first.content %>
+<% my_agent = "submission" if event_type == "SUB" %>
+<% my_agent = "archive" if event_type == "I" %>
+<% if my_agent %>
+    <linkingAgentIdentifier>
+      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
+      <linkingAgentIdentifierValue>info:fcla/daitss/agent/<%= @agents[:"#{my_agent}"][:project_code] %></linkingAgentIdentifierValue>
+    </linkingAgentIdentifier>
+<% end %>
+
   </event>
+
+<%   end %>
 <% end %> 
+
 
 </premis>

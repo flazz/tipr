@@ -3,10 +3,11 @@
 
 require 'nokogiri'
 require 'time'
+require 'representation'
 
 class DIP
   
-  attr_reader :rel_path, :ieid, :package_id, :create_date, :original_representation, :current_representation, :migration_map, :dfid_map
+  attr_reader :ieid, :package_id, :create_date, :original_representation, :current_representation, :migration_map, :dfid_map, :rel_path, :global_files_path
   
   NS = {
     'mets' => 'http://www.loc.gov/METS/',
@@ -17,24 +18,33 @@ class DIP
   def initialize(path)
     @path = path.chomp('/')     # Strip any trailing /es
     @doc = load_descriptor
+    @global_doc = load_global_descriptor
     @rel_path = load_rel_path
+    @global_files_path = load_global_files_path
     @ieid = load_ieid
     @package_id = load_package_id
     @create_date = load_create_date
     @dfid_map = load_dfid_map
+    @global_dfid_map = load_dfid_map(true)
     @migration_map = load_migration_map
+    @submitting_agent = load_submitting_agent
     @original_representation = load_original_representation
     @current_representation = load_current_representation
   end
   
-  def events_by_oid(oid)        # Given an OID, retrieve events
-    @doc.xpath('//daitss:EVENT', NS).select do |event|
+  def events(oid, global=false)               # Given an OID, retrieve events
+    doc = (@global_doc and global) ? @global_doc : @doc
+    doc.xpath('//daitss:EVENT', NS).select do |event|
       event.xpath('./daitss:OID', NS).first.content == oid
     end
   end
   
-  def events(fid)               # Given a file id, retrieve events
-    events_by_oid(@dfid_map.index(fid).to_s)
+  def events_by_fid(fid, global=false)        # Given a file id, retrieve events
+    events(@dfid_map[:"#{fid}"])
+  end
+  
+  def global_events(oid)
+    events(oid, true)
   end
   
   protected
@@ -47,10 +57,25 @@ class DIP
     open(descriptor) { |io| Nokogiri::XML io }
   end
   
+  def load_global_descriptor   # For now, we allow nonexistent global file descriptors
+    matches = Dir.glob "#{@path}/*/GFP_*_LOC.xml"
+    raise "Multiple possible global descriptors found" if matches.size > 1
+    descriptor = ( matches.empty? ? nil : matches.first )
+    open(descriptor) { |io| Nokogiri::XML io } if descriptor 
+  end
+  
   def load_rel_path             # includes package_id
     matches = Dir.glob "#{@path}/*/AIP_*_LOC.xml"
     dir = File.dirname(matches.first)
     dir.split("DIPs/").last
+  end
+
+  def load_global_files_path
+    if @global_doc
+      matches = Dir.glob "#{@path}/*/GFP_*_LOC.xml"
+      dir = File.dirname(matches.first)
+      dir.split("DIPs/").last
+    end
   end
 
   def load_ieid
@@ -71,20 +96,30 @@ class DIP
     Time.parse create_date_node.content
   end
   
-  def load_dfid_map             # Create a map between DFIDs and structMap FILEIDs
-    file_ids = @doc.xpath('//mets:file/@ID', NS).map { |a| a.value }
-    
+  
+  # Create a map between DFIDs and structMap FILEIDs
+  
+  def load_dfid_map(global=false)
+    return {} if global and @global_doc.nil?
+
+    doc = global ? @global_doc : @doc  
+    file_ids = doc.xpath('//mets:file/@ID', NS).map { |a| a.value }
+
     dfid_map = Hash.new
     
     file_ids.compact.each do |fid|
-      tmd = @doc.xpath("//mets:file[@ID = '#{fid}']", NS).first['ADMID']
-      dfid = @doc.xpath("//mets:techMD[@ID = '#{tmd}']//daitss:DFID", NS).first.content
-      dfid_map[:"#{dfid}"] = fid 
+      tmd = doc.xpath("//mets:file[@ID = '#{fid}']", NS).first['ADMID']
+      dfid = doc.xpath("//mets:techMD[@ID = '#{tmd}']//daitss:DFID", NS).first.content
+      dfid_map[:"#{fid}"] = dfid 
     end
     dfid_map
   end
+ 
   
-  def load_migration_map        # Create a map between migrated FILEIDs
+  # Create a map between migrated FILEIDs
+  
+  def load_migration_map
+
     mnodes = @doc.xpath('//daitss:REL_TYPE', NS).select { |n| n.content == 'MIGRATED_TO' }
     return nil if mnodes.empty?	# Don't bother going further  
     migration_map = Hash.new    # Will hold FILEID migration relationships
@@ -99,8 +134,8 @@ class DIP
       new_dfid = n.parent.xpath('./daitss:DFID_2', NS).first.content 
       
       # FILEIDs
-      old_file_id = @dfid_map[:"#{old_dfid}"]
-      new_file_id = @dfid_map[:"#{new_dfid}"]
+      old_file_id = @dfid_map.index(old_dfid)
+      new_file_id = @dfid_map.index(new_dfid)
 
       migration_map[:"#{old_file_id}"] = new_file_id
 
@@ -110,7 +145,44 @@ class DIP
 
   end
   
+  # Create a hash to represent the submitting agent of this package
+  
+  def load_submitting_agent
+    name = @doc.xpath("//mets:techMD//daitss:AGREEMENT_INFO/@ACCOUNT", NS).first.content
+    project_code = @doc.xpath("//mets:techMD//daitss:ACCOUNT_PROJECT", NS).first.content
+    { :name => name, :project_code => project_code, :type => "organization" }
+  end
+  
+  
+  # retrieve the DAITSS:FORMAT of the file from the given TechMD ID
+  
+  def file_format(tmd_id, global=false)
+    doc = global ? @global_doc : @doc    
+    doc.xpath("//mets:techMD[@ID = '#{tmd_id}']//daitss:FORMAT", NS).first.content
+  end
+
+  def add_global_files(representation)
+ 
+    # add our global files
+    if @global_doc
+      global_ids = @global_doc.xpath('//mets:file', NS)
+
+      global_ids.each do |gid|
+        global_path = File.join(@global_files_path, gid.xpath('mets:FLocat/@xlink:href', NS).first.content)
+        oid = @global_dfid_map[:"#{gid['ID']}"]
+	format = file_format(gid['ADMID'], true)
+	      
+        representation.add_global_file( gid['CHECKSUM'], global_path, oid)
+        representation.add_file_events(global_events(oid), format) if not global_events(oid).empty?
+      end
+    end
+    
+    representation  
+  end
+  
   def load_original_representation
+    
+    rep = Representation.new('ORIG', @ieid, @create_date, @package_id, @submitting_agent)
     
     id_list = @doc.xpath('//mets:file', NS)
     
@@ -119,33 +191,41 @@ class DIP
       id_list = id_list.select { |node| not @migration_map.has_value?(node['ID']) }
     end
     
-    id_list.map do |file_node| 
-      {
-      	:sha_1 => file_node['CHECKSUM'],
-      	:path => file_node.xpath('mets:FLocat/@xlink:href', NS).first.content,
-      	:aip_id => file_node['ID']
-      }
+    id_list.each do |file_node| 
+      path = File.join(@rel_path, file_node.xpath('mets:FLocat/@xlink:href', NS).first.content)
+      oid = @dfid_map[:"#{file_node['ID']}"]
+      format = file_format(file_node['ADMID'])
+      
+      rep.add_local_file( file_node['CHECKSUM'], path, oid)
+      rep.add_file_events(events(oid), format ) if not events(oid).empty?
     end
-
+    
+    rep.add_package_events(events(@ieid), nil)
+    add_global_files(rep)
   end
 
   def load_current_representation
   
     return @original_representation if @migration_map.nil? # Original rep is current
     
+    rep = Representation.new('ACTIVE', @ieid, @create_date, @package_id, @submitting_agent)
+    
     # Exclude older files that we've migrated from this representation
     id_list = @doc.xpath('//mets:file', NS).select do |file_node| 
       not @migration_map.member?(:"#{file_node['ID']}")
     end
     
-    id_list.map do |file_node| 
-      {
-        :sha_1 => file_node['CHECKSUM'],
-        :path => file_node.xpath('mets:FLocat/@xlink:href', NS).first.content,
-        :aip_id => file_node['ID']
-      }
+    id_list.each do |file_node|
+      path = File.join(@rel_path, file_node.xpath('mets:FLocat/@xlink:href', NS).first.content)
+      oid = @dfid_map[:"#{file_node['ID']}"]
+      format = file_format(file_node['ADMID'])
+      
+      rep.add_local_file( file_node['CHECKSUM'], path, oid)
+      rep.add_file_events(events(oid), format) if not events(oid).empty?
     end
     
+    rep.add_package_events(events(@ieid), nil)
+    add_global_files(rep)
   end
-  
+    
 end

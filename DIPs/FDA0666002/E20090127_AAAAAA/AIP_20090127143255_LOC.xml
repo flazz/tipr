@@ -754,6 +754,35 @@
       <mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="DAITSS">
         <mets:xmlData>
           <daitss:daitss>
+            <!-- Mock-up of package events -->
+            <daitss:EVENT>
+              <daitss:ID>488372</daitss:ID>
+              <daitss:OID>E20090127_AAAAAA</daitss:OID>
+              <daitss:EVENT_TYPE>SUB</daitss:EVENT_TYPE>
+              <daitss:DATE_TIME>2009-01-27 14:32:10</daitss:DATE_TIME>
+              <daitss:EVENT_PROCEDURE>Package submitted by FDA</daitss:EVENT_PROCEDURE>
+              <daitss:OUTCOME>SUCCESS</daitss:OUTCOME>
+              <daitss:NOTE></daitss:NOTE>
+            </daitss:EVENT>
+            <daitss:EVENT>
+              <daitss:ID>488373</daitss:ID>
+              <daitss:OID>E20090127_AAAAAA</daitss:OID>
+              <daitss:EVENT_TYPE>I</daitss:EVENT_TYPE>
+              <daitss:DATE_TIME>2009-01-27 14:32:11</daitss:DATE_TIME>
+              <daitss:EVENT_PROCEDURE>Package ingested by FDA</daitss:EVENT_PROCEDURE>
+              <daitss:OUTCOME>SUCCESS</daitss:OUTCOME>
+              <daitss:NOTE></daitss:NOTE>
+            </daitss:EVENT>
+            <daitss:EVENT>
+              <daitss:ID>488383</daitss:ID>
+              <daitss:OID>E20090127_AAAAAA</daitss:OID>
+              <daitss:EVENT_TYPE>D</daitss:EVENT_TYPE>
+              <daitss:DATE_TIME>2009-01-27 14:32:54</daitss:DATE_TIME>
+              <daitss:EVENT_PROCEDURE>Package disseminated by FDA</daitss:EVENT_PROCEDURE>
+              <daitss:OUTCOME>SUCCESS</daitss:OUTCOME>
+              <daitss:NOTE></daitss:NOTE>
+            </daitss:EVENT>
+            <!-- end of mock-up -->            
             <daitss:EVENT>
               <daitss:ID>488374</daitss:ID>
               <daitss:OID>F20090127_AAAAAA</daitss:OID>
