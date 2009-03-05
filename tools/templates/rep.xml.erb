@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mets xmlns="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
-      OBJID="<%= @rep.ieid %>"
+      OBJID="info:fcla/daitss/<%= @rep.ieid %>"
       LABEL="<%= @rep.package_id %>">
   
   <metsHdr CREATEDATE="<%= @rep.create_date.xmlschema %>">
@@ -15,7 +15,7 @@
       <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="tipr-rep-<%= mynum %>-digiprov.xml"/>
     </digiprovMD>
   </amdSec>
-  <% if @rep.global_files.nil? %><!-- No global files in this package --><% end %>  
+
   <fileSec>
     <fileGrp>
 <% @rep.files.each_with_index do |e,i| %>
