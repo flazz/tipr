@@ -52,23 +52,14 @@ XML
     @rep.ieid.should == 'E20081121_AAAAEW'
   end
   
-  it "should have an empty global file array" do
-    @rep.global_files.should be_kind_of(Array)
-    @rep.global_files.should be_empty
-  end
-  it "should have an empty local file array" do
-    @rep.local_files.should be_kind_of(Array)
-    @rep.local_files.should be_empty
+  it "should have an empty file array" do
+    @rep.files.should be_kind_of(Array)
+    @rep.files.should be_empty
   end
 
-  it "should have an empty package event array" do
-    @rep.package_events.should be_kind_of(EventArray)
-    @rep.package_events.should be_empty
-  end
-
-  it "should have an empty file event array" do
-    @rep.file_events.should be_kind_of(EventArray)
-    @rep.file_events.should be_empty
+  it "should have an empty event array" do
+    @rep.events.should be_kind_of(EventArray)
+    @rep.events.should be_empty
   end
   
   it "should have two agents" do
@@ -83,23 +74,14 @@ XML
     @rep.sha_1.should == Digest::SHA1::hexdigest(@rep_doc.to_s)
   end
   
-  it "should have a method for adding a local package file" do
-    @rep.add_local_file('e66bcfa9c53003156d58256c2326f80531e8b303', 'bin/findaip.rb', 'MYFILEID')
-    @rep.local_files.length.should == 1 
+  it "should have a method for adding a file" do
+    @rep.add_file('e66bcfa9c53003156d58256c2326f80531e8b303', 'bin/findaip.rb', 'MYFILEID')
+    @rep.files.length.should == 1 
   end
-  
-  it "should have a method for adding a global package file" do
-    @rep.add_global_file('478959110067f97abb1c3cd7f6914613c82b4a4c', 'bin/tipr-pack.rb', 'MYGLOBALID')
-    @rep.global_files.length.should == 1
-  end 
-  
-  it "should have a method which lists all files in the representation" do
-    @rep.files.length.should == 2
-  end
-  
-  it "should have a method for combining file events and package-wide events" do
-    @rep.file_events.push(@event_set)
-    @rep.package_events.push( {:events => @events, :object_format => "TIFF"})
+
+  it "should have a method for adding events" do
+    @rep.events.push(@event_set)
+    @rep.events.push( {:events => @events, :object_format => "TIFF"})
     @rep.events.length.should == 2
   end
   
