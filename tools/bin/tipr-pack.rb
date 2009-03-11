@@ -18,11 +18,13 @@ require 'libxml'
 
 dpath = ARGV[0]
 tpath = ARGV[1]
+sigpath = File.join(tpath, 'tipr.xml.sig')
 
 # Check arguments
-raise "Usage: ./tipr-pack.rb <PATH/TO/DIP> <PATH/TO/TIPR>" if not (dpath && tpath)
-raise "<PATH/TO/DIP> (#{ARGV[0]}) should exist" if not File.directory? dpath
-raise "<PATH/TO/TIPR> (#{ARGV[1]}) should exist" if not File.directory? tpath
+raise "Usage: ./tipr-pack.rb <PATH/TO/DIP> <PATH/TO/TIPR>" unless (dpath && tpath)
+raise "<PATH/TO/DIP> (#{ARGV[0]}) should exist" unless File.directory? dpath
+raise "<PATH/TO/TIPR> (#{ARGV[1]}) should exist" unless File.directory? tpath
+puts "WARNING: TIPR signature exists" if File.exists? sigpath
 
 dip = DIP.new dpath                # Our DIP
 
@@ -74,6 +76,16 @@ tipr_bag.add_file("tipr-rep-1.xml") { |file| file.puts orep[:xml] }
 tipr_bag.add_file("tipr-rep-2.xml") { |file| file.puts arep[:xml] } if orep != arep
 tipr_bag.add_file("tipr.xml") { |file| file.puts tipr }
 tipr_bag.add_file("tipr-rights.xml") {}
+
+# sign tipr.xml
+puts "Creating TIPR signature...."
+gpg_code = system("gpg -b -o #{sigpath} #{tpath}/tipr_bag/data/tipr.xml")
+raise "Error writing signature" unless gpg_code
+
+# add the sig to our bag and clean up
+sig = File.open(sigpath, 'r')
+tipr_bag.add_file("tipr.xml.sig"){ |io| io.puts sig.read }
+File.delete(sigpath)
 
 # bag our digiprov files
 [dip.original_representation, dip.current_representation].uniq.each_with_index do |r,i|
