@@ -10,7 +10,8 @@ class EventArray < Array
   # Probably worrying overmuch about forcing our array to look the way it should...
   
   def push(element)
-    raise "Expected a hash" if element.class != Hash   
+    raise "Expected a hash" if element.class != Hash
+    raise "Should have events" if not element[:events].kind_of?(Array)
     element[:events].each do |e| 
       raise "Expected array of Nokogiri::XML::Node" if not e.kind_of?(Nokogiri::XML::Node)
     end
@@ -23,7 +24,7 @@ end
 
 class Representation
 
-attr_reader :type, :ieid, :create_date, :package_id, :global_files, :local_files, :file_events, :package_events, :agents
+attr_reader :type, :ieid, :create_date, :package_id, :files, :events, :agents
 
 alias_method :to_xml, :to_s
 
@@ -34,10 +35,8 @@ alias_method :to_xml, :to_s
     @ieid = ieid
     @create_date = date
     @package_id = package_id
-    @global_files = Array.new
-    @local_files = Array.new
-    @file_events = EventArray.new
-    @package_events = EventArray.new
+    @files = Array.new
+    @events = EventArray.new
     @agents = { :archive => { :name=>"FDA", :project_code=>"1", :type=>"organization" }}
     @agents[:submission] = submitting_agent if submitting_agent and not submitting_agent.empty?
   end
@@ -49,29 +48,13 @@ alias_method :to_xml, :to_s
   def sha_1
     Digest::SHA1.hexdigest(to_s)
   end
-  
-  def events
-    @package_events | @file_events
-  end
-  
-  def files
-    @local_files | @global_files
-  end
-  
-  def add_global_file(sha1, path, oid) 
-    @global_files.push( { :sha_1 => sha1, :path => path, :oid => oid, :global => true })
-  end
-  
-  def add_local_file(sha1, path, oid)
-    @local_files.push( { :sha_1 => sha1, :path => path, :oid => oid })
-  end
-  
-  def add_package_events(event_list, object_format)
-    @package_events.push({ :events => event_list, :object_format => object_format })
-  end
-  
-  def add_file_events(event_list, object_format)
-    @file_events.push({ :events => event_list, :object_format => object_format })
+
+  def add_file(sha1, path, oid)
+    @files.push( { :sha_1 => sha1, :path => path, :oid => oid})
   end
 
+  def add_events(event_list, object_format)
+    @events.push({ :events => event_list, :object_format => object_format })
+  end
+  
 end

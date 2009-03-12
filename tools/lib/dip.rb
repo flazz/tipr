@@ -7,7 +7,7 @@ require 'representation'
 
 class DIP
   
-  attr_reader :ieid, :package_id, :create_date, :original_representation, :current_representation, :migration_map, :dfid_map, :rel_path, :global_files_path
+  attr_reader :ieid, :package_id, :create_date, :original_representation, :current_representation, :migration_map
   
   NS = {
     'mets' => 'http://www.loc.gov/METS/',
@@ -18,13 +18,11 @@ class DIP
   def initialize(path)
     @path = path.chomp('/')     # Strip any trailing /es
     @doc = load_descriptor
-    @global_doc = load_global_descriptor
-    @rel_path = load_rel_path
-    @global_files_path = load_global_files_path
+    @global_doc = load_descriptor(true)
     @ieid = load_ieid
     @package_id = load_package_id
     @create_date = load_create_date
-    @dfid_map = load_dfid_map
+    @dfid_map  = load_dfid_map
     @global_dfid_map = load_dfid_map(true)
     @migration_map = load_migration_map
     @submitting_agent = load_submitting_agent
@@ -32,52 +30,36 @@ class DIP
     @current_representation = load_current_representation
   end
   
-  def events(oid, global=false)               # Given an OID, retrieve events
+  # Given an OID, retrieve events
+  def events(oid, global=false)
     doc = (@global_doc and global) ? @global_doc : @doc
     doc.xpath('//daitss:EVENT', NS).select do |event|
       event.xpath('./daitss:OID', NS).first.content == oid
     end
   end
-  
-  def events_by_fid(fid, global=false)        # Given a file id, retrieve events
-    events(@dfid_map[:"#{fid}"])
-  end
-  
-  def global_events(oid)
-    events(oid, true)
-  end
-  
+
   protected
   
-  def load_descriptor
-    matches = Dir.glob "#{@path}/*/AIP_*_LOC.xml"
-    raise 'No descriptor found' if matches.empty?
-    raise 'Multiple possible descriptors' if matches.size > 1
-    descriptor = matches.first
-    open(descriptor) { |io| Nokogiri::XML io }
-  end
-  
-  def load_global_descriptor   # For now, we allow nonexistent global file descriptors
-    matches = Dir.glob "#{@path}/*/GFP_*_LOC.xml"
-    raise "Multiple possible global descriptors found" if matches.size > 1
-    descriptor = ( matches.empty? ? nil : matches.first )
-    open(descriptor) { |io| Nokogiri::XML io } if descriptor 
-  end
-  
-  def load_rel_path             # includes package_id
-    matches = Dir.glob "#{@path}/*/AIP_*_LOC.xml"
+  # Get the relative path to a dip file  
+
+  def rel_path(global=false)    
+    path = global ? "#{@path}/*/GFP_*_LOC.xml" : "#{@path}/*/AIP_*_LOC.xml"
+    matches = Dir.glob(path)
     dir = File.dirname(matches.first)
     dir.split("DIPs/").last
-  end
+  end  
+  
+  # Load a descriptor -- for now, allow nonexistent global file descriptors
 
-  def load_global_files_path
-    if @global_doc
-      matches = Dir.glob "#{@path}/*/GFP_*_LOC.xml"
-      dir = File.dirname(matches.first)
-      dir.split("DIPs/").last
-    end
+  def load_descriptor(global=false)
+    desc_path = global ? "#{@path}/*/GFP_*_LOC.xml" : "#{@path}/*/AIP_*_LOC.xml"
+    matches = Dir.glob(desc_path)
+    raise 'No descriptor found' if not global and matches.empty?
+    raise 'Multiple possible descriptors' if matches.size > 1
+    descriptor = ( matches.empty? ? nil : matches.first )
+    open(descriptor) { |io| Nokogiri::XML io } if descriptor
   end
-
+  
   def load_ieid
     ieid_node = @doc.xpath('//daitss:IEID', NS).first
     raise "IEID not found" unless ieid_node
@@ -100,11 +82,11 @@ class DIP
   # Create a map between DFIDs and structMap FILEIDs
   
   def load_dfid_map(global=false)
-    return {} if global and @global_doc.nil?
 
-    doc = global ? @global_doc : @doc  
+    doc = global ? @global_doc : @doc
+    return {} if doc.nil?       # Nothing to map
+
     file_ids = doc.xpath('//mets:file/@ID', NS).map { |a| a.value }
-
     dfid_map = Hash.new
     
     file_ids.compact.each do |fid|
@@ -158,74 +140,66 @@ class DIP
   
   def file_format(tmd_id, global=false)
     doc = global ? @global_doc : @doc    
-    doc.xpath("//mets:techMD[@ID = '#{tmd_id}']//daitss:FORMAT", NS).first.content
+    doc.xpath("//mets:techMD[@ID='#{tmd_id}']//daitss:FORMAT", NS).first.content
   end
 
-  def add_global_files(representation)
- 
-    # add our global files
-    if @global_doc
-      global_ids = @global_doc.xpath('//mets:file', NS)
+  # Load our representation  
+  
+  def load_representation(type, global=false, rep=nil)
 
-      global_ids.each do |gid|
-        global_path = File.join(@global_files_path, gid.xpath('mets:FLocat/@xlink:href', NS).first.content)
-        oid = @global_dfid_map[:"#{gid['ID']}"]
-	format = file_format(gid['ADMID'], true)
-	      
-        representation.add_global_file( gid['CHECKSUM'], global_path, oid)
-        representation.add_file_events(global_events(oid), format) if not global_events(oid).empty?
+    # Select the appropriate descriptor and dfid_map
+    doc = global ? @global_doc : @doc
+    dfid_map = global ? @global_dfid_map : @dfid_map
+    
+    return rep unless doc
+    
+    # Create a new representation if we weren't provided with one
+    rep = Representation.new(type, @ieid, @create_date, @package_id, 
+                             @submitting_agent) unless rep
+                             
+    # Create a basic list of file IDs
+    id_list = doc.xpath('//mets:file', NS)
+    
+    unless global or @migration_map.nil? # Don't log any global migrations
+      case type
+            
+        when 'ORIG'     
+          # If we've had a migration, exclude newer files
+          id_list = id_list.reject { |n| @migration_map.has_value?(n['ID']) }
+      
+        when 'ACTIVE'
+          # Use new, improved files in this representation
+          id_list = id_list.reject { |n| @migration_map.member?(:"#{n['ID']}") }
+
+        else
+          raise 'Representation type should be "ORIG" or "ACTIVE"'
       end
     end
     
-    representation  
+    # extract information about our files                            
+    id_list.each do |file_node|
+      
+      file = file_node.xpath('mets:FLocat/@xlink:href', NS).first.content
+      full_file_path = File.join(rel_path(global), file) 
+      oid = dfid_map[:"#{file_node['ID']}"]
+      format = file_format(file_node['ADMID'], global)
+      event_list = events(oid, global)
+            
+      rep.add_file( file_node['CHECKSUM'], full_file_path, oid )
+      rep.add_events(event_list, format) if not event_list.empty?
+    end
+    
+    rep.add_events(events(@ieid), nil) unless (global or events(@ieid).empty?)
+    rep = load_representation(type, true, rep) unless global
+    rep
   end
   
   def load_original_representation
-    
-    rep = Representation.new('ORIG', @ieid, @create_date, @package_id, @submitting_agent)
-    
-    id_list = @doc.xpath('//mets:file', NS)
-    
-    # If we've had a migration, exclude these new files from this representation
-    if not @migration_map.nil? 
-      id_list = id_list.select { |node| not @migration_map.has_value?(node['ID']) }
-    end
-    
-    id_list.each do |file_node| 
-      path = File.join(@rel_path, file_node.xpath('mets:FLocat/@xlink:href', NS).first.content)
-      oid = @dfid_map[:"#{file_node['ID']}"]
-      format = file_format(file_node['ADMID'])
-      
-      rep.add_local_file( file_node['CHECKSUM'], path, oid)
-      rep.add_file_events(events(oid), format ) if not events(oid).empty?
-    end
-    
-    rep.add_package_events(events(@ieid), nil)
-    add_global_files(rep)
+    load_representation('ORIG')
   end
 
   def load_current_representation
-  
-    return @original_representation if @migration_map.nil? # Original rep is current
-    
-    rep = Representation.new('ACTIVE', @ieid, @create_date, @package_id, @submitting_agent)
-    
-    # Exclude older files that we've migrated from this representation
-    id_list = @doc.xpath('//mets:file', NS).select do |file_node| 
-      not @migration_map.member?(:"#{file_node['ID']}")
-    end
-    
-    id_list.each do |file_node|
-      path = File.join(@rel_path, file_node.xpath('mets:FLocat/@xlink:href', NS).first.content)
-      oid = @dfid_map[:"#{file_node['ID']}"]
-      format = file_format(file_node['ADMID'])
-      
-      rep.add_local_file( file_node['CHECKSUM'], path, oid)
-      rep.add_file_events(events(oid), format) if not events(oid).empty?
-    end
-    
-    rep.add_package_events(events(@ieid), nil)
-    add_global_files(rep)
+    migration_map.nil? ? @original_representation : load_representation('ACTIVE')    
   end
     
 end
