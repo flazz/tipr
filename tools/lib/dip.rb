@@ -4,10 +4,28 @@
 require 'nokogiri'
 require 'time'
 require 'representation'
+require 'validatable'
+require 'digest/sha1'
+require 'valid'
+
 
 class DIP
+  include Validatable
+  include Validity
+
+  # The AIP should point to actual files
+  validates_true_for :completeness, :logic => lambda {files_exist?}
+
+  # All files should be included in the AIP
+  # TODO: Implement coverage if it's necessary
+  validates_true_for :coverage, :logic => lambda {all_files_included?}
+
+  # All checksums listed by representations should check out
+  validates_true_for :checksum_validity, :logic => lambda {valid_checksums?}
   
-  attr_reader :ieid, :package_id, :create_date, :original_representation, :current_representation, :migration_map
+  
+  attr_reader :ieid, :package_id, :create_date, :original_representation, 
+              :current_representation, :migration_map
   
   NS = {
     'mets' => 'http://www.loc.gov/METS/',
@@ -32,10 +50,17 @@ class DIP
   
   # Given an OID, retrieve events
   def events(oid, global=false)
-    doc = (@global_doc and global) ? @global_doc : @doc
+    doc = global ? @global_doc : @doc
+    return [] unless doc
+    
     doc.xpath('//daitss:EVENT', NS).select do |event|
       event.xpath('./daitss:OID', NS).first.content == oid
     end
+  end
+  
+  def package_path
+    package = @path.split("/").last
+    @path.split(package).first
   end
 
   protected
