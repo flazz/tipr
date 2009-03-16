@@ -32,7 +32,7 @@
   <object xsi:type="file">
     <objectIdentifier>
       <objectIdentifierType>URI</objectIdentifierType>
-      <objectIdentifierValue>info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= oid %></objectIdentifierValue>
+      <objectIdentifierValue>info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%= "#{@rep_num}" %>/<%= oid %></objectIdentifierValue>
     </objectIdentifier>
     <objectCharacteristics>
       <compositionLevel>0</compositionLevel>
@@ -59,7 +59,7 @@
   <agent>
     <agentIdentifier>
       <agentIdentifierType>URI</agentIdentifierType>
-      <agentIdentifierValue>info:fcla/daitss/agent/<%= agent[:project_code] %></agentIdentifierValue>
+      <agentIdentifierValue>info:fcla/daitss/agent/<%= agent[:name] %></agentIdentifierValue>
     </agentIdentifier>
     <agentName><%= agent[:name] %></agentName>
     <agentType><%= agent[:type] %></agentType>
@@ -114,7 +114,7 @@
     <linkingObjectIdentifier>
       <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
       <linkingObjectIdentifierValue>
-        info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= e.xpath("./daitss:OID", xmlns).first.content %>
+        info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%= "#{@rep_num}" %>/<%= e.xpath("./daitss:OID", xmlns).first.content %>
       </linkingObjectIdentifierValue>
     </linkingObjectIdentifier>
 <% if not e.xpath("./daitss:OID", xmlns).first.content.strip == @package_id %>
@@ -132,7 +132,7 @@
       <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
       <linkingObjectIdentifierValue>
         <!-- daitss:REL_OID -->
-        info:fcla/daitss/<%= "#{@package_id}" %>/oid/<%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
+        info:fcla/daitss/<%= "#{@package_id}" %>/event/<%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
       </linkingObjectIdentifierValue>
         <linkingObjectRole>
           <!-- A nice description of the related file's role
@@ -148,7 +148,7 @@
 <% if my_agent %>
     <linkingAgentIdentifier>
       <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
-      <linkingAgentIdentifierValue>info:fcla/daitss/agent/<%= @agents[:"#{my_agent}"][:project_code] %></linkingAgentIdentifierValue>
+      <linkingAgentIdentifierValue>info:fcla/daitss/agent/<%= @agents[:"#{my_agent}"][:name] %></linkingAgentIdentifierValue>
     </linkingAgentIdentifier>
 <% end %>
 
