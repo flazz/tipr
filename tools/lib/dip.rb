@@ -35,6 +35,8 @@ class DIP
 
   def initialize(path)
     @path = path.chomp('/')     # Strip any trailing /es
+    @descriptor_path = load_descriptor_path
+    @global_descriptor_path = load_descriptor_path(true)
     @doc = load_descriptor
     @global_doc = load_descriptor(true)
     @ieid = load_ieid
@@ -62,6 +64,10 @@ class DIP
     package = @path.split("/").last
     @path.split(package).first
   end
+  
+  def files
+    @original_representation.files || @current_representation.files
+  end
 
   protected
   
@@ -72,16 +78,20 @@ class DIP
     matches = Dir.glob(path)
     dir = File.dirname(matches.first)
     dir.split("DIPs/").last
-  end  
+  end
   
-  # Load a descriptor -- for now, allow nonexistent global file descriptors
-
-  def load_descriptor(global=false)
+  def load_descriptor_path(global=false)
     desc_path = global ? "#{@path}/*/GFP_*_LOC.xml" : "#{@path}/*/AIP_*_LOC.xml"
     matches = Dir.glob(desc_path)
     raise 'No descriptor found' if not global and matches.empty?
     raise 'Multiple possible descriptors' if matches.size > 1
-    descriptor = ( matches.empty? ? nil : matches.first )
+    matches.empty? ? nil : matches.first
+  end
+  
+  # Load a descriptor -- for now, allow nonexistent global file descriptors
+
+  def load_descriptor(global=false)
+    descriptor = global ? @global_descriptor_path : @descriptor_path
     open(descriptor) { |io| Nokogiri::XML io } if descriptor
   end
   
@@ -182,6 +192,17 @@ class DIP
     rep = Representation.new(type, @ieid, @create_date, @package_id, 
                              @submitting_agent) unless rep
                              
+    # And add our descriptor to the representation
+    descriptor = global ? @global_descriptor_path : @descriptor_path
+        
+    if descriptor
+      descriptor_name = descriptor.split('/').last
+      digest = Digest::SHA1.hexdigest(File.read(descriptor))
+      descriptor_path = File.join(rel_path(global), descriptor_name)
+      rep.add_file(digest, descriptor_path, nil)
+    end
+    
+    
     # Create a basic list of file IDs
     id_list = doc.xpath('//mets:file', NS)
     
@@ -190,7 +211,7 @@ class DIP
             
         when 'ORIG'     
           # If we've had a migration, exclude newer files
-          id_list = id_list.reject { |n| @migration_map.has_value?(n['ID']) }
+          id_list = id_list.reject { |n| @migration_map.has_value?(:"#{n['ID']}") }
       
         when 'ACTIVE'
           # Use new, improved files in this representation

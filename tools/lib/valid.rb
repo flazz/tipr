@@ -7,7 +7,6 @@ module Validity
   
   def files_exist?
     p = package_path
-    files = original_representation.files || current_representation.files
 
     files.each do |f| 
       fp = File.join(p, f[:path])
@@ -23,7 +22,6 @@ module Validity
   # Are all files in the package included in the descriptors?
   
   def all_files_included?
-    files = original_representation.files || current_representation.files
     # TODO: Implement this if necessary
   end
   
@@ -33,8 +31,6 @@ module Validity
   def valid_checksums?
     
     p = package_path
-    files = original_representation.files || current_representation.files
-    
     files.each do |f|
       file_path = File.join(p, f[:path])
       
