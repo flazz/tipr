@@ -132,7 +132,7 @@
       <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
       <linkingObjectIdentifierValue>
         <!-- daitss:REL_OID -->
-        info:fcla/daitss/<%= "#{@package_id}" %>/event/<%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
+        info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%= "#{@rep_num}" %>/<%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
       </linkingObjectIdentifierValue>
         <linkingObjectRole>
           <!-- A nice description of the related file's role

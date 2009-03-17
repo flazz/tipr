@@ -42,7 +42,7 @@ premis = LibXML::XML::Schema.new("http://www.loc.gov/standards/premis/premis.xsd
 
 # Create our bag
 bag_path = File.join(tpath, 'tipr_bag')
-tipr_bag = Bagit::Bag.new bag_path
+tipr_bag = BagIt::Bag.new bag_path
 
 # bag up files from our DIP
 Dir.glob("#{dpath}/**/*") do |f|
