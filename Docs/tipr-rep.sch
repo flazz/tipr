@@ -3,10 +3,10 @@
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         queryBinding='xslt' schemaVersion='ISO19757-3'>
   
-  <title>A TIPR Envelope (tipr.xml) schematron</title>
+  <title>A TIPR Representation (tipr-rep-x.xml) schematron</title>
 
-  <!-- tipr.xml should always follow the METS schema. Additional requirements 
-       are outlined by this schematron 
+  <!-- tipr-rep-x.xml should always follow the METS schema. 
+       Additional requirements are outlined by this schematron.
     -->
 
   <ns prefix="mets" uri="http://www.loc.gov/METS/" />
@@ -29,7 +29,7 @@
         There should be one amdSec
       </assert>
       <report test="mets:dmdSec">
-        This tipr.xml has a dmdSec (not required)
+        This representation has a dmdSec (not required)
       </report>
       <assert test="count(mets:fileSec)=1">
         There should be one fileSec
@@ -62,9 +62,7 @@
         The agent should have a name
       </assert> 
 
-      <!-- For now, we'll restrict the TIPR version. 
-           [FIXME: In the future, we should address versioning differences] 
-        -->
+      <!-- For now, we restrict the TIPR version. -->
       <assert test="mets:note[text()='tipr-1.0.0']">
         The tipr version should be 1.0.0
       </assert>
@@ -72,29 +70,29 @@
 
   </pattern>
   
-  <pattern name="The rightsMD Content">
+  <pattern name="The digiprovMD Content">
 
     <rule context="mets:mets/mets:amdSec">
-      <assert test="count(mets:rightsMD)=1">
-        There should be one rightsMD section
-      </assert>
-      <assert test="count(child::*)=1">
-        There should only be a rightsMD section in the amdSec
+      <assert test="count(mets:digiprovMD)=1">
+        There should be one digiprovMD section
       </assert>
     </rule>
     
-    <rule context="mets:mets/mets:amdSec/mets:rightsMD">
+    <rule context="mets:mets/mets:amdSec/mets:digiprovMD">
       <assert test="mets:mdRef">
-        The rights section should have an mdRef
+        The digital provenance section should have an mdRef
       </assert>
       <assert test="mets:mdRef[@LOCTYPE='URL']">
-        The rights location should be a URL
+        The digital provenance should reference a URL
       </assert>
       <assert test="mets:mdRef[@MDTYPE='PREMIS']">
-        The rights type should be PREMIS
+        The provenance type should be PREMIS
       </assert>
-      <assert test="mets:mdRef[@xlink:href='tipr-rights.xml']">
-        The rights URL should point to tipr-rights.xml
+      <assert test="mets:mdRef[starts-with(@xlink:href, 'tipr-rep-')]">
+        The rights URL should point to tipr-rep-x-digiprov.xml
+      </assert>
+      <assert test="mets:mdRef[contains(@xlink:href, '-digiprov.xml')]">
+        The rights URL should point to tipr-rep-x-digiprov.xml
       </assert>
     </rule>
 
@@ -105,9 +103,6 @@
     <rule context="mets:mets/mets:fileSec">
       <assert test="count(mets:fileGrp)=1">
         There should only be one file group
-      </assert>
-      <assert test="mets:fileGrp/mets:file/mets:FLocat[@xlink:href='tipr-rep-1.xml']">
-        There should be an original representation in the fileSec
       </assert>
     </rule>
     
@@ -126,10 +121,7 @@
         All files in the fileSec should point to one external location
       </assert>
       <assert test="mets:FLocat[@LOCTYPE='URL']">
-        A representation should be referenced by a URL
-      </assert>
-      <assert test="mets:FLocat[starts-with(@xlink:href, 'tipr-rep-')]">
-        Representation files should have 'tipr-rep-' prefix
+        A file should be referenced by a URL
       </assert>
       <assert test="key('file_ids', @ID)">
         Files in the fileSec should be referenced in the structMap
@@ -140,25 +132,16 @@
   
   <pattern name="The structMap Content">
 
-    <rule context="mets:mets/mets:structMap/mets:div">
+    <rule context="mets:mets/mets:structMap">
       <assert test="count(mets:div)>=1">
-        The struct map should have at least one inner div
-      </assert>
-      <assert test="count(mets:div[@ORDER='1'])=1">
-        There should be one original representation (ORDER='1')
-      </assert>
-      <assert test="count(mets:div[@TYPE='ACTIVE'])=1">
-        There should be one active representation (TYPE='ACTIVE')
-      </assert>
-      <assert test="count(mets:div[not(@ORDER=preceding-sibling::*/@ORDER)])=count(mets:div/@ORDER)">
-        No representations should share the same order
+        The struct map should have at least one div
       </assert>
     </rule>
     
     <rule context="mets:mets/mets:structMap/mets:div//mets:fptr">
       <assert test="./@FILEID = //mets:file/@ID">
         Files referenced in the structMap should exist in the fileSec
-      </assert>
+      </assert>      
     </rule>
     
   </pattern>
