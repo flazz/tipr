@@ -122,7 +122,7 @@ XML
       @first_object.should have_xpath_with_content('premis:objectIdentifier/premis:objectIdentifierValue', 
                                                    "info:fcla/daitss/E20090127_AAAAAA/representation/1")
       @second_object.should have_xpath_with_content('premis:objectIdentifier/premis:objectIdentifierValue', 
-                                                   "info:fcla/daitss/E20090127_AAAAAA/oid/F20090127_AAAAAA")
+                                                   "info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAA")
     end
 
   end
@@ -211,7 +211,7 @@ XML
     
     it "should point back to a file object" do
       @event.should have_xpath_with_content('premis:linkingObjectIdentifier/premis:linkingObjectIdentifierValue',
-                                            "info:fcla/daitss/E20090127_AAAAAA/oid/F20090127_AAAAAA")
+                                            "info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAA")
     end
 
   end
@@ -219,14 +219,14 @@ XML
   it "should have a submission event which references the submission agent" do
     event = @doc.xpath('//premis:eventType[contains(text(), "submission")]', NS_MAP).first
     event.parent.should have_xpath_with_content('premis:linkingAgentIdentifier/premis:linkingAgentIdentifierValue',
-                                                 'info:fcla/daitss/agent/252')
+                                                 'info:fcla/daitss/agent/FIU')
     
   end
   
   it "should have an ingest event which references the archival agent" do
     event = @doc.xpath('//premis:eventType[contains(text(), "ingest")]', NS_MAP).first
     event.parent.should have_xpath_with_content('premis:linkingAgentIdentifier/premis:linkingAgentIdentifierValue',
-                                                 'info:fcla/daitss/agent/1')
+                                                 'info:fcla/daitss/agent/FDA')
   end
   
 
