@@ -50,6 +50,10 @@ class DIP
     @current_representation = load_current_representation
   end
   
+  def global_files?
+    @global_doc ? true : false
+  end
+  
   # Given an OID, retrieve events
   def events(oid, global=false)
     doc = global ? @global_doc : @doc
