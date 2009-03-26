@@ -50,24 +50,6 @@
 <%  end %>
 <% end %>
 
-<%# Jump through some hoops to print out agents properly %>
-
-<!-- Agents -->
-<% agents = @agents.clone %>
-<% agents.delete(:archive) if agents[:submission] == agents[:archive] %>
-<% agents.each_value do |agent| %>
-  <agent>
-    <agentIdentifier>
-      <agentIdentifierType>URI</agentIdentifierType>
-      <agentIdentifierValue>info:fcla/daitss/agent/<%= agent[:name] %></agentIdentifierValue>
-    </agentIdentifier>
-    <agentName><%= agent[:name] %></agentName>
-    <agentType><%= agent[:type] %></agentType>
-  </agent>
-
-<% end %>
-
-
 <%# Print out events       %>
 <% @events.each do |event| %>
 <%   event[:events].each do |e|     %>
@@ -109,8 +91,16 @@
         </eventOutcomeDetailNote>  
       </eventOutcomeDetail>
     </eventOutcomeInformation>
-
-  <!-- Related File Object -->
+<% event_type = e.xpath('./daitss:EVENT_TYPE', xmlns).first.content %>
+<% my_agent = "submission" if event_type == "SUB" %>
+<% my_agent = "archive" if event_type == "I" %>
+<% if my_agent %>
+    <linkingAgentIdentifier>
+      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
+      <linkingAgentIdentifierValue>info:fcla/daitss/agent/<%= @agents[:"#{my_agent}"][:name] %></linkingAgentIdentifierValue>
+    </linkingAgentIdentifier>
+<% end %>
+    <!-- Related File Object -->
     <linkingObjectIdentifier>
       <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
       <linkingObjectIdentifierValue>
@@ -142,20 +132,27 @@
         </linkingObjectRole>
     </linkingObjectIdentifier>
 <% end %>
-<% event_type = e.xpath('./daitss:EVENT_TYPE', xmlns).first.content %>
-<% my_agent = "submission" if event_type == "SUB" %>
-<% my_agent = "archive" if event_type == "I" %>
-<% if my_agent %>
-    <linkingAgentIdentifier>
-      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
-      <linkingAgentIdentifierValue>info:fcla/daitss/agent/<%= @agents[:"#{my_agent}"][:name] %></linkingAgentIdentifierValue>
-    </linkingAgentIdentifier>
-<% end %>
-
   </event>
 
 <%   end %>
 <% end %> 
+
+<%# Jump through some hoops to print out agents properly %>
+
+<!-- Agents -->
+<% agents = @agents.clone %>
+<% agents.delete(:archive) if agents[:submission] == agents[:archive] %>
+<% agents.each_value do |agent| %>
+  <agent>
+    <agentIdentifier>
+      <agentIdentifierType>URI</agentIdentifierType>
+      <agentIdentifierValue>info:fcla/daitss/agent/<%= agent[:name] %></agentIdentifierValue>
+    </agentIdentifier>
+    <agentName><%= agent[:name] %></agentName>
+    <agentType><%= agent[:type] %></agentType>
+  </agent>
+
+<% end %>
 
 
 </premis>
