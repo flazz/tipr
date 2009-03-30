@@ -802,15 +802,6 @@
               <daitss:NOTE>Compared archive-calculated checksum to submitted checksum. Type: sha-1</daitss:NOTE>
             </daitss:EVENT>
             <daitss:EVENT>
-              <daitss:ID>488376</daitss:ID>
-              <daitss:OID>F20090127_AAAAAB</daitss:OID>
-              <daitss:EVENT_TYPE>CV</daitss:EVENT_TYPE>
-              <daitss:DATE_TIME>2009-01-27 14:32:19</daitss:DATE_TIME>
-              <daitss:EVENT_PROCEDURE>Checked for virus during DataFile creation</daitss:EVENT_PROCEDURE>
-              <daitss:OUTCOME>SUCCESS</daitss:OUTCOME>
-              <daitss:NOTE></daitss:NOTE>
-            </daitss:EVENT>
-            <daitss:EVENT>
               <daitss:ID>488377</daitss:ID>
               <daitss:OID>F20090127_AAAAAC</daitss:OID>
               <daitss:EVENT_TYPE>CV</daitss:EVENT_TYPE>
@@ -1188,58 +1179,6 @@
         </mets:xmlData>
       </mets:mdWrap>
     </mets:techMD>
-    <mets:techMD ID="TMD5">
-      <mets:mdWrap MDTYPE="OTHER">
-        <mets:xmlData>
-          <daitss:daitss>
-            <daitss:ADMIN>
-              <daitss:OID>F20090127_AAAAAB</daitss:OID>
-              <daitss:INGEST_TIME>2009-01-27 14:32:37</daitss:INGEST_TIME>
-              <daitss:ACCOUNT_PROJECT>1</daitss:ACCOUNT_PROJECT>
-            </daitss:ADMIN>
-            <daitss:DATA_FILE>
-              <daitss:DFID>F20090127_AAAAAB</daitss:DFID>
-              <daitss:IEID>E20090127_AAAAAA</daitss:IEID>
-              <daitss:CREATE_DATE>0000-00-00 00:00:00</daitss:CREATE_DATE>
-              <daitss:FILE_COPY_DATE>0000-00-00 00:00:00</daitss:FILE_COPY_DATE>
-              <daitss:DIP_VERSION>F20090127_AAAAAB</daitss:DIP_VERSION>
-              <daitss:ORIGIN>DEPOSITOR</daitss:ORIGIN>
-              <daitss:PACKAGE_PATH>.DS_Store</daitss:PACKAGE_PATH>
-              <daitss:FILE_TITLE>.DS_Store</daitss:FILE_TITLE>
-              <daitss:FILE_EXT></daitss:FILE_EXT>
-              <daitss:FORMAT>APP_UNK</daitss:FORMAT>
-              <daitss:CREATOR_PROG></daitss:CREATOR_PROG>
-              <daitss:SIZE>6148</daitss:SIZE>
-              <daitss:BYTE_ORDER>UNKNOWN</daitss:BYTE_ORDER>
-              <daitss:IS_ROOT>FALSE</daitss:IS_ROOT>
-              <daitss:IS_GLOBAL>FALSE</daitss:IS_GLOBAL>
-              <daitss:IS_OBSOLETE>FALSE</daitss:IS_OBSOLETE>
-              <daitss:CAN_DELETE>FALSE</daitss:CAN_DELETE>
-              <daitss:ROLE>CONTENT_FILE</daitss:ROLE>
-              <daitss:PRES_LEVEL>FULL</daitss:PRES_LEVEL>
-            </daitss:DATA_FILE>
-            <daitss:SEVERE_ELEMENT>
-              <daitss:CODE>L_FILE_UNKNOWN</daitss:CODE>
-              <daitss:TYPE>LIMITATION</daitss:TYPE>
-              <daitss:SEVERITY>NOTE</daitss:SEVERITY>
-              <daitss:DESCRIPTION>The file is an unknown format to the archive.</daitss:DESCRIPTION>
-            </daitss:SEVERE_ELEMENT>
-            <daitss:MESSAGE_DIGEST>
-              <daitss:DFID>F20090127_AAAAAB</daitss:DFID>
-              <daitss:CODE>sha-1</daitss:CODE>
-              <daitss:VALUE>8347bde3cc9f126f6c3ec218b771260258468b18</daitss:VALUE>
-              <daitss:ORIGIN>ARCHIVE</daitss:ORIGIN>
-            </daitss:MESSAGE_DIGEST>
-            <daitss:MESSAGE_DIGEST>
-              <daitss:DFID>F20090127_AAAAAB</daitss:DFID>
-              <daitss:CODE>md5</daitss:CODE>
-              <daitss:VALUE>4541b7bfac1849882b8162a35327fffd</daitss:VALUE>
-              <daitss:ORIGIN>ARCHIVE</daitss:ORIGIN>
-            </daitss:MESSAGE_DIGEST>
-          </daitss:daitss>
-        </mets:xmlData>
-      </mets:mdWrap>
-    </mets:techMD>
     <mets:techMD ID="TMD6">
       <mets:mdWrap MDTYPE="OTHER">
         <mets:xmlData>
@@ -1396,9 +1335,6 @@
       </mets:file>
       <mets:file ADMID="TMD4" CHECKSUM="bdd8b45a6631816db76375935d6b48a0047c9fab" CHECKSUMTYPE="SHA-1" CREATED="2009-01-27T14:32:36" ID="FID4" MIMETYPE="application/xml" SIZE="1612">
         <mets:FLocat LOCTYPE="URL" xlink:href="FDA0666002_LOC.xml"></mets:FLocat>
-      </mets:file>
-      <mets:file ADMID="TMD5" CHECKSUM="8347bde3cc9f126f6c3ec218b771260258468b18" CHECKSUMTYPE="SHA-1" ID="FID5" MIMETYPE="application/octet-stream" SIZE="6148">
-        <mets:FLocat LOCTYPE="URL" xlink:href=".DS_Store"></mets:FLocat>
       </mets:file>
       <mets:file ADMID="TMD6" CHECKSUM="256180b9df9c46ed0f791f79bb8632572e817b4b" CHECKSUMTYPE="SHA-1" ID="FID6" MIMETYPE="application/xml" SIZE="46412">
         <mets:FLocat LOCTYPE="URL" xlink:href="links_20090127143206/www.loc.gov/standards/mods/v3/mods-3-3.xsd"></mets:FLocat>
