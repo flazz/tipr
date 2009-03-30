@@ -53,4 +53,8 @@ describe DIP do
       gfp.should_not be_empty
     end
   end
+  
+  it "should be valid" do
+    @dip.should be_valid
+  end
 end
