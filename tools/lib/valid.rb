@@ -3,13 +3,12 @@ require 'digest/sha1'
 
 module Validity
   
-  # Do all files in the descriptors exist in the package?
-  
+  # Do all files in the descriptors exist in the package?  
   def files_exist?
     p = package_path
 
     files.each do |f| 
-      fp = File.join(p, f[:path])
+      fp = File.join(p, f[0])
       errors.add :completeness, "#{fp} is referenced by a descriptor but " +
                                 "is not in the package" unless File.exist? fp
     end
@@ -19,25 +18,34 @@ module Validity
   end
   
   
-  # Are all files in the package included in the descriptors?
-  
+  # Are all files in the package included in the descriptor (except the AIP)?
   def all_files_included?
-    # TODO: Implement this if necessary
+    file_paths = files.map { |f| File.join(package_path, f[0]) }
+
+    package_files = Dir.glob(File.join(package_path, package_id, "**", "*"))
+    package_files = package_files.select { |f| File.file? f }
+
+    package_files.each do |p|
+      errors.add :coverage, "#{p} is in the package but is not covered by the" +
+                             " representation(s)" unless file_paths.include?(p)  
+    end
+    
+    return errors.on(:coverage).nil?
+
   end
   
   
   # Do all the files listed have valid checksums?
-  
   def valid_checksums?
     
     p = package_path
     files.each do |f|
-      file_path = File.join(p, f[:path])
+      file_path = File.join(p, f[0])
       
       if File.exist?(file_path)
         digest = Digest::SHA1.hexdigest(File.read(file_path))
         errors.add :checksum_validity, "Digest for #{file_path} in AIP does " +
-                                       "not match" unless digest == f[:sha_1]
+                                       "not match" unless digest == f[1]
       end    
     
     end
