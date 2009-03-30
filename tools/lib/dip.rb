@@ -69,8 +69,10 @@ class DIP
     @path.split(package).first
   end
   
+  # Returns an array of [path, sha_1] pairs for each distinct file in the
+  # package
   def files
-    @original_representation.files || @current_representation.files
+    @original_representation.file_list | @current_representation.file_list
   end
 
   protected

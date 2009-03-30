@@ -57,4 +57,8 @@ alias_method :to_xml, :to_s
     @events.push({ :events => event_list, :object_format => object_format })
   end
   
+  def file_list
+    @files.map { |f| [f[:path], f[:sha_1]] }
+  end
+  
 end
