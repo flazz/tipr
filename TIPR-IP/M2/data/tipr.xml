@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets xmlns="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
+      OBJID="info:fcla/daitss/E20090127_AAAAAA"
+      LABEL="FDA0666002">
+
+  <metsHdr CREATEDATE="2009-01-27T14:32:55Z">
+    <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
+      <name>FCLA</name>
+      <note>tipr-1.0.0</note>
+    </agent>
+  </metsHdr>
+  
+  <amdSec>
+    <rightsMD ID="rights-metadata-0">
+      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="tipr-rights.xml"/>
+    </rightsMD>
+  </amdSec>
+
+  <fileSec>
+    <fileGrp>
+      <file ID="file-0" CHECKSUM="326249a74741601308d0b0a71f521dbab6d251fa" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="tipr-rep-1.xml"/>
+      </file>
+      <file ID="file-1" CHECKSUM="c72c5c7aa03112d1948d95c840d51cccdb243f08" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="tipr-rep-2.xml"/>
+      </file>
+    </fileGrp>
+  </fileSec>
+
+  <structMap>
+    <div>
+      <div  ORDER="1">
+        <fptr FILEID="file-0"/>
+      </div>
+      <div TYPE="ACTIVE" ORDER="2">
+        <fptr FILEID="file-1"/>
+      </div>
+    </div>
+  </structMap>
+  
+</mets>

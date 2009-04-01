@@ -5,7 +5,7 @@ require 'sip'
 describe SIP do
   
   before do
-    @sip_path = File.join 'tipr_bag', 'data'
+    @sip_path = File.join '..', 'TIPR-IP', 'M2', 'data'
     @sip = SIP.new @sip_path
   end
   

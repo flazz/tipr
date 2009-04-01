@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<premis xmlns="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
+
+    <!-- DAITSS events:  
+           CPD: decrease pre{ :name => servation level
+           CPU: increase preservation level
+           CV: virus check
+           D: disseminate
+           DEL: deleted a previously ingested file
+           DLK: downloaded link
+           FC: fixity Check
+           I: ingest
+           L: localized
+           M: migrated
+           N: normalized
+           RM: refreshed media
+           SUB: submission
+           UNKNOWN: unknown event type
+           VC: verify checksum
+           WA: withdraw by archive
+           WO: withdraw by request of owner
+     -->
+     
+  <!-- Representation object -->
+  <object xsi:type="representation">
+    <objectIdentifier>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/E20090127_AAAAAA/representation/1</objectIdentifierValue>
+    </objectIdentifier>
+  </object>
+  
+  <!-- File objects -->
+  <object xsi:type="file">
+    <objectIdentifier>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAA</objectIdentifierValue>
+    </objectIdentifier>
+    <objectCharacteristics>
+      <compositionLevel>0</compositionLevel>
+      <format>
+        <formatDesignation>
+	      <formatName>jpeg</formatName>
+        </formatDesignation>
+      </format>
+    </objectCharacteristics>
+  </object>
+  
+  <object xsi:type="file">
+    <objectIdentifier>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAC</objectIdentifierValue>
+    </objectIdentifier>
+    <objectCharacteristics>
+      <compositionLevel>0</compositionLevel>
+      <format>
+        <formatDesignation>
+	      <formatName>xml</formatName>
+          <formatVersion>1.0</formatVersion>
+        </formatDesignation>
+      </format>
+    </objectCharacteristics>
+  </object>
+  
+  <object xsi:type="file">
+    <objectIdentifier>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAD</objectIdentifierValue>
+    </objectIdentifier>
+    <objectCharacteristics>
+      <compositionLevel>0</compositionLevel>
+      <format>
+        <formatDesignation>
+	      <formatName>xml</formatName>
+          <formatVersion>1.0</formatVersion>
+        </formatDesignation>
+      </format>
+    </objectCharacteristics>
+  </object>
+  
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488374
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      virus check
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:12-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Checked for virus during DataFile creation
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAA
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488375
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      verify checksum
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:14-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      compareMessageDigests
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          Compared archive-calculated checksum to submitted checksum. Type: sha-1
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAA
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488380
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      migrated
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:35-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Create a jp2 file migrated from a jpeg file
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          File derived from: /stage/var/daitss/ingest/work/FDA0666002/E20090127_AAAAAA/ateam.jpg
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAA
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        <!-- daitss:REL_OID -->
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAE
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>
+          <!-- A nice description of the related file's role
+               FIXME: check to make sure we address all potential relationships
+            -->
+          Migrated file
+        </linkingObjectRole>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488377
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      virus check
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:24-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Checked for virus during DataFile creation
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAC
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488382
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      localized
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:36-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Made a copy of this XML file with relative links to files with relative links
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          File derived from: /stage/var/daitss/ingest/work/FDA0666002/E20090127_AAAAAA/FDA0666002.xml
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAC
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        <!-- daitss:REL_OID -->
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAG
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>
+          <!-- A nice description of the related file's role
+               FIXME: check to make sure we address all potential relationships
+            -->
+          Version of file with local links
+        </linkingObjectRole>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488378
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      virus check
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:33-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Checked for virus during DataFile creation
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAD
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488379
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      downloaded link
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:34-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Downloaded the file from the Internet
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          File downloaded as: /stage/var/daitss/ingest/work/FDA0666002/E20090127_AAAAAA/links_20090127143206/www.loc.gov/standards/mods/v3/mods-3-3.xsd
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAD
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        <!-- daitss:REL_OID -->
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAC
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>
+          <!-- A nice description of the related file's role
+               FIXME: check to make sure we address all potential relationships
+            -->
+          Local copy of linked file
+        </linkingObjectRole>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488381
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      localized
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:36-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Made a copy of this XML file with relative links to files with relative links
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          File derived from: /stage/var/daitss/ingest/work/FDA0666002/E20090127_AAAAAA/links_20090127143206/www.loc.gov/standards/mods/v3/mods-3-3.xsd
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAD
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+    <!-- Related Representation Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>associated representation</linkingObjectRole>
+    </linkingObjectIdentifier>
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        <!-- daitss:REL_OID -->
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/F20090127_AAAAAF
+      </linkingObjectIdentifierValue>
+        <linkingObjectRole>
+          <!-- A nice description of the related file's role
+               FIXME: check to make sure we address all potential relationships
+            -->
+          Version of file with local links
+        </linkingObjectRole>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488372
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      submission
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:10-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Package submitted by FDA
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <linkingAgentIdentifier>
+      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
+      <linkingAgentIdentifierValue>info:fcla/daitss/agent/FDA</linkingAgentIdentifierValue>
+    </linkingAgentIdentifier>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/E20090127_AAAAAA
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488373
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      ingest
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:11-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Package ingested by FDA
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <linkingAgentIdentifier>
+      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
+      <linkingAgentIdentifierValue>info:fcla/daitss/agent/FDA</linkingAgentIdentifierValue>
+    </linkingAgentIdentifier>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/E20090127_AAAAAA
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+  </event>
+
+  <event>
+  
+    <!-- Converted from DAITSS schema -->
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>
+        <!-- daitss:EVENT ID -->
+        info:fcla/daitss/E20090127_AAAAAA/event/488383
+      </eventIdentifierValue>
+    </eventIdentifier>
+ 
+    <eventType>
+      <!-- Nice description of DAITSS:EVENT_TYPE. See codes above. -->
+      disseminate
+    </eventType>
+ 
+    <eventDateTime>
+      <!-- daitss:DATE_TIME in 8601 -->
+      2009-01-27T14:32:54-05:00
+    </eventDateTime>
+ 
+    <eventDetail>
+      <!-- daitss:EVENT_PROCEDURE -->
+      Package disseminated by FDA
+    </eventDetail>
+ 
+    <eventOutcomeInformation>
+      <eventOutcome>
+        <!-- daitss:OUTCOME -->
+        SUCCESS
+      </eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>
+          <!-- daitss:NOTE -->
+          
+        </eventOutcomeDetailNote>  
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    <!-- Related File Object -->
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>
+        info:fcla/daitss/E20090127_AAAAAA/representation/1/E20090127_AAAAAA
+      </linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+  </event>
+
+ 
+
+
+<!-- Agents -->
+  <agent>
+    <agentIdentifier>
+      <agentIdentifierType>URI</agentIdentifierType>
+      <agentIdentifierValue>info:fcla/daitss/agent/FDA</agentIdentifierValue>
+    </agentIdentifier>
+    <agentName>FDA</agentName>
+    <agentType>organization</agentType>
+  </agent>
+
+
+
+</premis>
