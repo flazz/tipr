@@ -1,6 +1,9 @@
 # This file contains functionality to extract information from a
 # DAITSS DIP for use in constructing a TIPR DIP
 
+# DIP package must be off of a DIPs directory to properly determine the path
+
+
 require 'nokogiri'
 require 'time'
 require 'representation'

@@ -83,12 +83,17 @@ DAITSS_ROLES = {
             :M   => "Migrated file"                      
                 }                                        
 
-
-
 module TIPR
 
-  # Generates xml from the specified template
+  NS = {
+         'mets' => 'http://www.loc.gov/METS/',
+         'daitss' => 'http://www.fcla.edu/dls/md/daitss/',
+         'xlink' => 'http://www.w3.org/1999/xlink'
+       }
 
+
+
+  # Generates xml from the specified template
   def self.gen_xml(template)
     t = open File.join('templates', template) do |io|
       string = io.read
@@ -99,7 +104,6 @@ module TIPR
 
   # Generates representation xml from a template, dip, and the 
   # representation type
-
   def self.generate_rep(rep)
     @rep = rep
     gen_xml('rep.xml.erb')
@@ -108,7 +112,6 @@ module TIPR
   # Generates the tipr envelope xml from a template, dip, and
   # original and active representations (xml + checksum)
   # In the future, this should be fixed to only require checksums
-
   def self.generate_tipr_envelope(dip, orig, active)
     @dip = dip
     @orig = orig
@@ -123,7 +126,6 @@ module TIPR
   #
   # object_category should be file, representation, or bitstream 
   # to conform with premis.
-    
   def self.generate_digiprov(events, package_id, rep_num, agents)
     @package_id = package_id
     @events = events
@@ -131,10 +133,16 @@ module TIPR
     @agents = agents
     gen_xml('digiprov.xml.erb')
   end
+
+  # Generates the METS for a DAITSS SIP
+  def self.generate_sip(sip)
+    @sip = sip
+    gen_xml('daitss_sip.xml.erb')
+  end  
+  
   
   # Creates a simple hash of the input file and sha-1 sum.
   # Intended to facilitate generating and looping through representations.
-
   def self.sha1_pair(xml)
     {
       :sha_1 => Digest::SHA1.hexdigest(xml),
@@ -144,7 +152,6 @@ module TIPR
   
   # Validate an xml file against a schema. Schema must be a 
   # LibXML::XML::Schema;
-  
   def self.validate(xml_string, schema)
 
     # parse xml to be validated
