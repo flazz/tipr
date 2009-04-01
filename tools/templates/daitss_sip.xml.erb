@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets
+    xmlns:mets="http://www.loc.gov/mets/"
+    xmlns:daitss="http://www.fcla.edu/dls/md/daitss/"
+    xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/mets/ http://www.loc.gov/standards/mets/version17/mets.v1-7.xsd
+      http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd
+      http://www.fcla.edu/dls/md/daitss/ http://www.fcla.edu/dls/md/daitss/daitss.xsd"
+    OBJID="<%= @sip.package_id %>">
+ 
+  <mets:amdSec>
+    <mets:digiprovMD ID="DPMD-0">
+      <mets:mdWrap OTHERMDTYPE="DAITSS" MDTYPE="OTHER">
+        <mets:xmlData>
+          <daitss:daitss>
+            <daitss:AGREEMENT_INFO ACCOUNT="<%= @sip.partner %>" PROJECT="TIPR"/>
+          </daitss:daitss>
+        </mets:xmlData>
+      </mets:mdWrap>
+    </mets:digiprovMD>
+  </mets:amdSec>
+  
+  <mets:fileSec>
+    <mets:fileGrp>
+<% @sip.files.each_with_index do |f, i| %>    
+      <mets:file ID="FILE-<%= i %>" CHECKSUM="<%= f[:sum] %>" CHECKSUMTYPE="SHA-1">
+        <mets:FLocat xlink:href="<%= f[:path].split(/^files\//).last %>" LOCTYPE="URL"/>
+      </mets:file>
+<% end %>
+    </mets:fileGrp>
+  </mets:fileSec>
+  
+  <mets:structMap>
+    <mets:div>
+<% @sip.representations.each do |r| %>
+      <mets:div>
+<%   r.file_groups.each do |fg|     %>
+<%     if fg.is_a?(Array)           %>
+        <mets:div>
+<%       fg.each do |fp|            %>
+          <mets:fptr FILEID="FILE-<%= @sip.files.index(fp) %>"/>
+<%       end                        %>
+        <mets:div>
+<%     else                         %> 
+        <mets:fptr FILEID="FILE-<%= @sip.files.index(fg) %>"/>
+<%     end                          %>
+<%   end                            %>
+      </mets:div>
+<% end %>
+    </mets:div>
+  </mets:structMap>
+ 
+</mets:mets>
