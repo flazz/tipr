@@ -70,11 +70,11 @@ share_examples_for "all representations" do
       end    
     end
     
-    it "should have a metadata file group" do
-      mdgroup = @doc.root.xpath('//mets:fileSec/mets:fileGrp[@USE="METADATA"]',
-                                NS_MAP)
-                                
-      mdgroup.length.should == 1
+    it "should have a digiprov file referenced in a metadata file group" do
+      dp = @doc.root.xpath("//mets:fileSec/mets:fileGrp[@USE='METADATA']/mets:file",
+                           NS_MAP)
+      dp.length.should == 1
+      dp.first.should have_xpath("mets:FLocat[@xlink:href='rep-digiprov.xml']")
     end
 
   end

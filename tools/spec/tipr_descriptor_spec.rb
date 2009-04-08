@@ -68,13 +68,12 @@ describe "the tipr descriptor" do
       end
     end
     
-    it "should have a metadata fileGroup" do
-      mdgroup = @doc.root.xpath('//mets:fileSec/mets:fileGrp[@USE="METADATA"]',
-                                NS_MAP)
-                                
-      mdgroup.should_not be_empty
-      #mdgroup.xpath('mets:file', NS_MAP).
-    end    
+    it "should have a rights file referenced in a metadata file Group" do
+      mdfile = @doc.root.xpath('//mets:fileSec/mets:fileGrp[@USE="METADATA"]/mets:file',
+                               NS_MAP)
+      mdfile.length.should == 1
+      mdfile.first.should have_xpath('mets:FLocat[@xlink:href="tipr-rights.xml"]')
+    end
   end
   
   # We checked for the struct map in AllTiprFiles
