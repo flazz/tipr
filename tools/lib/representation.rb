@@ -49,6 +49,13 @@ alias_method :to_xml, :to_s
   def sha_1
     Digest::SHA1.hexdigest(to_s)
   end
+  
+  def digiprov
+    i = @type == 'ORIG' ? 1 : 2
+    dp = TIPR.generate_digiprov(@events, @ieid, i, @agents)
+    sum = Digest::SHA1.hexdigest(dp)
+    { :sha_1 => sum, :digiprov => dp }
+  end
 
   def add_file(sha1, path, oid)
     @files.push( DIPFile.new(sha1, path, oid) )
