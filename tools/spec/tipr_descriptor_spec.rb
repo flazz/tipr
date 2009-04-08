@@ -52,15 +52,30 @@ describe "the tipr descriptor" do
     end 
   end
 
-  it "should have a fileSec that points to representation descriptors" do
-    # Validate each file representation descriptor.
-    @files.each do |f|
-      f['ID'].should_not be_nil
-      f['CHECKSUM'].should_not be_nil
-      f['CHECKSUMTYPE'].should eql('SHA-1')
-      f.xpath('mets:FLocat', NS_MAP).first.should reference_an_xml_file      
+  it "should have a fileSec with files" do
+    @files.should_not be_empty
+  end
+  
+  describe "the fileSec" do
+    
+    it "should point to representation descriptors" do
+      # Validate each file representation descriptor.
+      @files.each do |f|
+        f['ID'].should_not be_nil
+        f['CHECKSUM'].should_not be_nil
+        f['CHECKSUMTYPE'].should eql('SHA-1')
+        f.xpath('mets:FLocat', NS_MAP).first.should reference_an_xml_file      
+      end
+    end
+    
+    it "should have a metadata fileGroup" do
+      mdgroup = @doc.root.xpath('//mets:fileSec/mets:fileGrp[@USE="METADATA"]',
+                                NS_MAP)
+                                
+      mdgroup.should_not be_empty
+      #mdgroup.xpath('mets:file', NS_MAP).
     end    
-  end 
+  end
   
   # We checked for the struct map in AllTiprFiles
   describe "the struct map" do
@@ -81,9 +96,9 @@ describe "the tipr descriptor" do
       active.length.should == 1
     end
 
-    it "should have a file pointer for each file in the filesec" do
+    it "should have a file pointer for each file in the filesec except metadata files" do
       fptrs = @divs.xpath('./mets:fptr', NS_MAP).map { |fp| fp['FILEID'] }
-      @files.each { |f| fptrs.should include(f['ID']) } 
+      @files.each { |f| fptrs.should include(f['ID']) unless f['ID'] == 'TIPR-RMD'} 
     end
   end
 

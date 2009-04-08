@@ -69,13 +69,20 @@ share_examples_for "all representations" do
         f.xpath('./mets:FLocat', NS_MAP).first.should reference_a_file      
       end    
     end
+    
+    it "should have a metadata file group" do
+      mdgroup = @doc.root.xpath('//mets:fileSec/mets:fileGrp[@USE="METADATA"]',
+                                NS_MAP)
+                                
+      mdgroup.length.should == 1
+    end
 
   end
   
   describe "the struct map" do
     it "should have a file pointer for each file in the filesec" do
       fptrs = @divs.xpath('./mets:fptr', NS_MAP).map { |fp| fp['FILEID'] }
-      @files.each { |f| fptrs.should include(f['ID']) }
+      @files.each { |f| fptrs.should include(f['ID']) unless f['ID'] == 'REP-DPMD' }
     end
   end
 end
