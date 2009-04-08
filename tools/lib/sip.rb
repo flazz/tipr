@@ -6,6 +6,9 @@
 
 require 'nokogiri'
 require 'tipr'
+require 'validatable'
+require 'valid'
+
 
 SIPFile = Struct.new(:path, :sum)
 
@@ -68,8 +71,24 @@ end
 
 class SIP
 
+  include Validatable
+  include Validity
+  
+  # The TIPR files shouldn't point to missing files
+  validates_true_for :completeness, :logic => lambda {files_exist?}
+
+  # All files should be covered by the TIPR files
+  validates_true_for :coverage, :logic => lambda {all_files_included?}
+
+  # All checksums listed by representations should check out
+  validates_true_for :checksum_validity, :logic => lambda {valid_checksums?}
+
+
   attr_reader :path, :tipr, :package_id, :partner, :representations, :files
 
+  # Hack to make it work with Validity
+  alias_method :package_path, :path
+  
   def initialize(tipr_path)
     @path = tipr_path
     @tipr = load_tipr

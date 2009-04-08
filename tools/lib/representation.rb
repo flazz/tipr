@@ -2,6 +2,7 @@ require 'nokogiri'
 require 'digest/sha1'
 require 'tipr'
 
+DIPFile = Struct.new(:sha_1, :path, :oid)
 
 class EventArray < Array
   
@@ -50,15 +51,11 @@ alias_method :to_xml, :to_s
   end
 
   def add_file(sha1, path, oid)
-    @files.push( { :sha_1 => sha1, :path => path, :oid => oid})
+    @files.push( DIPFile.new(sha1, path, oid) )
   end
 
   def add_events(event_list, object_format)
     @events.push({ :events => event_list, :object_format => object_format })
-  end
-  
-  def file_list
-    @files.map { |f| [f[:path], f[:sha_1]] }
   end
   
 end

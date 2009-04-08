@@ -75,13 +75,12 @@ class DIP
   # Returns an array of [path, sha_1] pairs for each distinct file in the
   # package
   def files
-    @original_representation.file_list | @current_representation.file_list
+    @original_representation.files | @current_representation.files
   end
 
   protected
   
-  # Get the relative path to a dip file  
-
+  # Get the relative path to a dip file
   def rel_path(global=false)    
     path = global ? "#{@path}/*/GFP_*_LOC.xml" : "#{@path}/*/AIP_*_LOC.xml"
     matches = Dir.glob(path)
@@ -98,7 +97,6 @@ class DIP
   end
   
   # Load a descriptor -- for now, allow nonexistent global file descriptors
-
   def load_descriptor(global=false)
     descriptor = global ? @global_descriptor_path : @descriptor_path
     open(descriptor) { |io| Nokogiri::XML io } if descriptor
@@ -124,7 +122,6 @@ class DIP
   
   
   # Create a map between DFIDs and structMap FILEIDs
-  
   def load_dfid_map(global=false)
 
     doc = global ? @global_doc : @doc
@@ -143,7 +140,6 @@ class DIP
  
   
   # Create a map between migrated FILEIDs
-  
   def load_migration_map
 
     mnodes = @doc.xpath('//daitss:REL_TYPE', NS).select { |n| n.content == 'MIGRATED_TO' }
@@ -172,7 +168,6 @@ class DIP
   end
   
   # Create a hash to represent the submitting agent of this package
-  
   def load_submitting_agent
     name = @doc.xpath("//mets:techMD//daitss:AGREEMENT_INFO/@ACCOUNT", NS).first.content
     project_code = @doc.xpath("//mets:techMD//daitss:ACCOUNT_PROJECT", NS).first.content
@@ -181,14 +176,12 @@ class DIP
   
   
   # retrieve the DAITSS:FORMAT of the file from the given TechMD ID
-  
   def file_format(tmd_id, global=false)
     doc = global ? @global_doc : @doc    
     doc.xpath("//mets:techMD[@ID='#{tmd_id}']//daitss:FORMAT", NS).first.content
   end
 
   # Load our representation  
-  
   def load_representation(type, global=false, rep=nil)
 
     # Select the appropriate descriptor and dfid_map

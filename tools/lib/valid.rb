@@ -8,7 +8,7 @@ module Validity
     p = package_path
 
     files.each do |f| 
-      fp = File.join(p, f[0])
+      fp = File.join(p, f[:path])
       errors.add :completeness, "#{fp} is referenced by a descriptor but " +
                                 "is not in the package" unless File.exist? fp
     end
@@ -20,7 +20,7 @@ module Validity
   
   # Are all files in the package included in the descriptor (except the AIP)?
   def all_files_included?
-    file_paths = files.map { |f| File.join(package_path, f[0]) }
+    file_paths = files.map { |f| File.join(package_path, f[:path]) }
 
     package_files = Dir.glob(File.join(package_path, package_id, "**", "*"))
     package_files = package_files.select { |f| File.file? f }
@@ -40,12 +40,12 @@ module Validity
     
     p = package_path
     files.each do |f|
-      file_path = File.join(p, f[0])
+      file_path = File.join(p, f[:path])
       
       if File.exist?(file_path)
         digest = Digest::SHA1.hexdigest(File.read(file_path))
         errors.add :checksum_validity, "Digest for #{file_path} in AIP does " +
-                                       "not match" unless digest == f[1]
+                                       "not match" unless digest == f[:sha_1]
       end    
     
     end
