@@ -103,11 +103,32 @@
   <pattern name="The fileSec Content">
 
     <rule context="mets:mets/mets:fileSec">
-      <assert test="count(mets:fileGrp)=1">
-        There should only be one file group
+      <assert test="count(mets:fileGrp)=2">
+        There should be two file groups
+      </assert>
+      <assert test="count(mets:fileGrp[@USE='METADATA'])=1">
+        There should be one metadata file group
       </assert>
       <assert test="mets:fileGrp/mets:file/mets:FLocat[@xlink:href='tipr-rep-1.xml']">
         There should be an original representation in the fileSec
+      </assert>
+    </rule>
+
+    <rule context="mets:mets/mets:fileSec/mets:fileGrp[@USE!='METADATA']">
+      <assert test="mets:file/mets:FLocat[starts-with(@xlink:href, 'tipr-rep-')]">
+        Representation files should have 'tipr-rep-' prefix
+      </assert>
+      <assert test="key('file_ids', mets:file/@ID)">
+        Files in the fileSec should be referenced in the structMap
+      </assert>
+    </rule>
+    
+    <rule context="mets:mets/mets:fileSec/mets:fileGrp[@USE='METADATA']">
+      <assert test="count(mets:file)=1">
+        There should only be one file described in the metadata file group
+      </assert>
+      <assert test="mets:file/mets:FLocat[@xlink:href='tipr-rights.xml']">
+        The TIPR rights file should be described in the metadata file group
       </assert>
     </rule>
     
@@ -127,12 +148,6 @@
       </assert>
       <assert test="mets:FLocat[@LOCTYPE='URL']">
         A representation should be referenced by a URL
-      </assert>
-      <assert test="mets:FLocat[starts-with(@xlink:href, 'tipr-rep-')]">
-        Representation files should have 'tipr-rep-' prefix
-      </assert>
-      <assert test="key('file_ids', @ID)">
-        Files in the fileSec should be referenced in the structMap
       </assert>
     </rule>
 
