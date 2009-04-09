@@ -123,7 +123,7 @@ class SIP
   
   # Load the representations as Nokogiri docs
   def load_representations
-    reps = @tipr.xpath('mets:mets/mets:fileSec//mets:FLocat/@xlink:href', 
+    reps = @tipr.xpath('mets:mets/mets:fileSec/mets:fileGrp[@USE!="METADATA"]/mets:FLocat/@xlink:href', 
                        TIPR::NS)
     reps.map { |r| SIPRepresentation.new(File.join(@path, r)) }
   end
