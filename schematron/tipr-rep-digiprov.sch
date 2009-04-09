@@ -21,6 +21,9 @@
       <assert test="count(premis:object[@xsi:type='file' or 'bitstream'])>=1" >
         There should one at least one file or bitstream object
       </assert>
+      <assert test="count(premis:agent)>=1">
+        There should be at least one agent
+      </assert>
     </rule>
 
     <rule context="//premis:objectIdentifier">
@@ -49,8 +52,12 @@
         Linking object identifier value should not be empty
       </assert>    
     </rule>
-  
-  <!-- FIXME: Need to add rule for agents -->
+
+    <rule context="premis:agent/premis:agentIdentifier">
+      <assert test="premis:agentIdentifierType[normalize-space(text())='URI']">
+        Agent identifier type should be URI.
+      </assert>
+    </rule>
         
   </pattern>
   
