@@ -49,6 +49,8 @@
         Linking object identifier value should not be empty
       </assert>    
     </rule>
+  
+  <!-- FIXME: Need to add rule for agents -->
         
   </pattern>
   
