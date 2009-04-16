@@ -114,7 +114,7 @@
       </assert>
     </rule>
 
-    <rule context="mets:mets/mets:fileSec/mets:fileGrp[@USE!='METADATA']">
+    <rule context="mets:mets/mets:fileSec/mets:fileGrp[not(@USE='METADATA')]">
       <assert test="mets:file/mets:FLocat[starts-with(@xlink:href, 'tipr-rep-')]">
         Representation files should have 'tipr-rep-' prefix
       </assert>

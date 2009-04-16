@@ -108,14 +108,17 @@
         There should be one metadata file group
       </assert>
       <assert test="count(mets:fileGrp[@USE='METADATA']/mets:file)=1">
-        There should be exactly one file in the metadata file groupe
+        There should be exactly one file in the metadata file group
       </assert>
     </rule>
 
-    <rule context="mets:mets/mets:fileSec/mets:fileGrp[@USE!='METADATA']">
+    <rule context="mets:mets/mets:fileSec/mets:fileGrp[not(@USE='METADATA')]">
       <assert test="key('file_ids', mets:file/@ID)">
         Files in the fileSec should be referenced in the structMap
-      </assert>    
+      </assert>
+      <assert test="mets:file/mets:FLocat[starts-with(@xlink:href, 'files/')]">
+        All files in this representation should be in the files directory
+      </assert>
     </rule>
     
     <rule context="mets:mets/mets:fileSec/mets:fileGrp[@USE='METADATA']">
