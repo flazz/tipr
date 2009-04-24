@@ -19,9 +19,6 @@
       <assert test="@OBJID">
         There should be an OBJID (the TIPR creator's package identifier)
       </assert>
-      <assert test="@LABEL">
-        There should be a LABEL (the affiliate's package identifier)
-      </assert>
       <assert test="count(mets:metsHdr)=1">
         There should be one METS Header
       </assert>
@@ -72,14 +69,17 @@
 
   </pattern>
   
-  <pattern name="The rightsMD Content">
+  <pattern name="The amdSec Content">
 
     <rule context="mets:mets/mets:amdSec">
       <assert test="count(mets:rightsMD)=1">
         There should be one rightsMD section
       </assert>
-      <assert test="count(child::*)=1">
-        There should only be a rightsMD section in the amdSec
+      <assert test="count(mets:digiprovMD)=1">
+        There should be one digiprovMD section
+      </assert>
+      <assert test="count(child::*)=2">
+        There should only be one rightsMD and one digiprovMD in the amdSec
       </assert>
     </rule>
     
@@ -95,6 +95,21 @@
       </assert>
       <assert test="mets:mdRef[@xlink:href='tipr-rights.xml']">
         The rights URL should point to tipr-rights.xml
+      </assert>
+    </rule>
+
+    <rule context="mets:mets/mets:amdSec/mets:digiprovMD">
+      <assert test="mets:mdRef">
+        The digiprov section should have an mdRef
+      </assert>
+      <assert test="mets:mdRef[@LOCTYPE='URL']">
+        The digiprov location should be a URL
+      </assert>
+      <assert test="mets:mdRef[@MDTYPE='PREMIS']">
+        The digiprov type should be PREMIS
+      </assert>
+      <assert test="mets:mdRef[@xlink:href='tipr-digiprov.xml']">
+        The digiprov URL should point to tipr-digiprov.xml
       </assert>
     </rule>
 
@@ -158,9 +173,6 @@
     <rule context="mets:mets/mets:structMap/mets:div">
       <assert test="count(mets:div)>=1">
         The struct map should have at least one inner div
-      </assert>
-      <assert test="count(mets:div[@ORDER='1'])=1">
-        There should be one original representation (ORDER='1')
       </assert>
       <assert test="count(mets:div[@TYPE='ACTIVE'])=1">
         There should be one active representation (TYPE='ACTIVE')

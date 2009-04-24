@@ -19,9 +19,6 @@
       <assert test="@OBJID">
         There should be an OBJID (the TIPR creator's package identifier)
       </assert>
-      <assert test="@LABEL">
-        There should be a LABEL (the affiliate's package identifier)
-      </assert>
       <assert test="count(mets:metsHdr)=1">
         There should be one METS Header
       </assert>
