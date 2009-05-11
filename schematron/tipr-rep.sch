@@ -86,10 +86,10 @@
         The provenance type should be PREMIS
       </assert>
       <assert test="mets:mdRef[starts-with(@xlink:href, 'tipr-rep-')]">
-        The rights URL should point to tipr-rep-x-digiprov.xml
+        The provenance URL should point to tipr-rep-x-digiprov.xml
       </assert>
       <assert test="mets:mdRef[contains(@xlink:href, '-digiprov.xml')]">
-        The rights URL should point to tipr-rep-x-digiprov.xml
+        The provenance URL should point to tipr-rep-x-digiprov.xml
       </assert>
     </rule>
 
