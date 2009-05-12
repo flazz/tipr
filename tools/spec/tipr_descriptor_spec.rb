@@ -68,11 +68,13 @@ describe "the tipr descriptor" do
       end
     end
     
-    it "should have a rights file referenced in a metadata file Group" do
-      mdfile = @doc.root.xpath('//mets:fileSec/mets:fileGrp[@USE="METADATA"]/mets:file',
+    it "should have rights and digiprov files referenced in a metadata file Group" do
+      mdfile = @doc.root.xpath('//mets:fileSec/mets:fileGrp[@USE="METADATA"]',
                                NS_MAP)
       mdfile.length.should == 1
-      mdfile.first.should have_xpath('mets:FLocat[@xlink:href="tipr-rights.xml"]')
+      mdfile.first.xpath('mets:file', NS_MAP).length.should == 2
+      mdfile.first.should have_xpath('mets:file/mets:FLocat[@xlink:href="tipr-rights.xml"]')
+      mdfile.first.should have_xpath('mets:file/mets:FLocat[@xlink:href="tipr-digiprov.xml"]')
     end
   end
   
@@ -97,7 +99,9 @@ describe "the tipr descriptor" do
 
     it "should have a file pointer for each file in the filesec except metadata files" do
       fptrs = @divs.xpath('./mets:fptr', NS_MAP).map { |fp| fp['FILEID'] }
-      @files.each { |f| fptrs.should include(f['ID']) unless f['ID'] == 'TIPR-RMD'} 
+      files = @files.reject { |f| ['TIPR-DPMD', 'TIPR-RMD'].include? f['ID'] }
+      
+      files.each { |f| fptrs.should include(f['ID']) } 
     end
   end
 

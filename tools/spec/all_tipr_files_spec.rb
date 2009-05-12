@@ -14,10 +14,6 @@ share_as :AllTiprFiles do
     @doc.root['OBJID'].should_not be_nil
   end
 
-  it "should have a LABEL" do
-    @doc.root['LABEL'].should_not be_nil
-  end
-
   it "should have a mets header" do
     @rchildren.first.name.should eql('metsHdr')
   end
