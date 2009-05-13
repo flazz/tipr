@@ -78,13 +78,13 @@ XML
     @events = [ {:events => events, :object_format => "IMG_JPEG_JFIF"}, {:events=> package_events} ]
 #    @premis_schema = "http://www.loc.gov/standards/premis/v1/PREMIS-v1-1.xsd"
 #    @premis_schema = "http://www.loc.gov/standards/premis/premis.xsd"
-    
+    @files = [ { :oid=>"F20090127_AAAAAA", :format=>{ :name=> "TIFF" } } ]
     @agents = { 
     	        :submission => { :name=>"FIU", :project_code=>252, :type=>"organization" }, 
                 :archive => { :name => "FDA", :project_code => 1, :type => "organization" }
               }
     
-    raw_xml = TIPR.generate_digiprov(@events, 'E20090127_AAAAAA', 1, @agents)
+    raw_xml = TIPR.generate_digiprov(@events, 'E20090127_AAAAAA', 1, @agents, @files)
     @doc = Nokogiri::XML raw_xml, nil, nil, Nokogiri::XML::PARSE_NOBLANKS
     
   end

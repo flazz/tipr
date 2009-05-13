@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'digest/sha1'
 require 'tipr'
 
-DIPFile = Struct.new(:sha_1, :path, :oid)
+DIPFile = Struct.new(:sha_1, :path, :oid, :format)
 
 class EventArray < Array
   
@@ -52,17 +52,17 @@ alias_method :to_xml, :to_s
   
   def digiprov
     i = @type == 'ORIG' ? 1 : 2
-    dp = TIPR.generate_digiprov(@events, @ieid, i, @agents)
+    dp = TIPR.generate_digiprov(@events, @ieid, i, @agents, @files)
     sum = Digest::SHA1.hexdigest(dp)
     { :sha_1 => sum, :digiprov => dp }
   end
 
-  def add_file(sha1, path, oid)
-    @files.push( DIPFile.new(sha1, path, oid) )
+  def add_file(sha1, path, oid, format)
+    @files.push( DIPFile.new(sha1, path, oid, format) )
   end
 
-  def add_events(event_list, object_format)
-    @events.push({ :events => event_list, :object_format => object_format })
+  def add_events(event_list)
+    @events.push({ :events => event_list })
   end
   
 end

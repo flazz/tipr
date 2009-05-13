@@ -24,15 +24,14 @@
   
 <%# Print out file objects      %>
   <!-- File objects -->
-<% @events.each do |event| %>
-<%   if event[:events].first.xpath("daitss:OID", xmlns).first.content.strip != @package_id %>
-<%     oid = event[:events].first.xpath("daitss:OID", xmlns).first.content    %>
-<%     format_name = DAITSS_FORMATS[:"#{event[:object_format]}"][:name]%>
-<%     format_version = DAITSS_FORMATS[:"#{event[:object_format]}"][:version]%>
+<% @files.each do |file| %>
+<%   if file[:oid].strip != @package_id %>
+<%     format_name = file[:format][:name]%>
+<%     format_version = file[:format][:version]%>
   <object xsi:type="file">
     <objectIdentifier>
       <objectIdentifierType>URI</objectIdentifierType>
-      <objectIdentifierValue>info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%= "#{@rep_num}" %>/<%= oid %></objectIdentifierValue>
+      <objectIdentifierValue>info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%= "#{@rep_num}" %>/<%= file[:oid] %></objectIdentifierValue>
     </objectIdentifier>
     <objectCharacteristics>
       <compositionLevel>0</compositionLevel>

@@ -126,7 +126,8 @@ module TIPR
   #
   # object_category should be file, representation, or bitstream 
   # to conform with premis.
-  def self.generate_digiprov(events, package_id, rep_num, agents)
+  def self.generate_digiprov(events, package_id, rep_num, agents, files)
+    @files = files
     @package_id = package_id
     @events = events
     @rep_num = rep_num

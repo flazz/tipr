@@ -36,7 +36,7 @@ describe Representation do
 </daitss>
 XML
     @events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
-    @event_set = { :events => @events, :object_format => "JPEG" }
+    @event_set = { :events => @events }
 
   end
 
@@ -75,15 +75,17 @@ XML
   end
   
   it "should have a method for adding a file" do
-    @rep.add_file('e66bcfa9c53003156d58256c2326f80531e8b303', 'bin/findaip.rb', 'MYFILEID')
+    @rep.add_file('e66bcfa9c53003156d58256c2326f80531e8b303', 'bin/findaip.rb', 'MYFILEID', "text")
     @rep.files.length.should == 1 
   end
 
   it "should have a method for adding events" do
     @rep.events.push(@event_set)
-    @rep.events.push( {:events => @events, :object_format => "TIFF"})
+    @rep.events.push( {:events => @events })
     @rep.events.length.should == 2
   end
+  
+  it "should have a method for creating xml provenance"
   
 end
 
@@ -114,7 +116,7 @@ describe EventArray do
 </daitss>
 XML
     @events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
-    @event_set = { :events => @events, :object_format => "JPEG" }
+    @event_set = { :events => @events }
     @event_array = EventArray.new
   end
   

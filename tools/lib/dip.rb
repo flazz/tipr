@@ -196,12 +196,14 @@ class DIP
                              
     # And add our descriptor to the representation
     descriptor = global ? @global_descriptor_path : @descriptor_path
-        
+    
+    # Create an arbitrary OID for the descriptor, and set the format to XML
     if descriptor
       descriptor_name = descriptor.split('/').last
       digest = Digest::SHA1.hexdigest(File.read(descriptor))
       descriptor_path = File.join(rel_path(global), descriptor_name)
-      rep.add_file(digest, descriptor_path, nil)
+      rep.add_file(digest, descriptor_path, @ieid + "_AIP", 
+                  { :name => "XML", :version=> "1.0" } )
     end
     
     
@@ -225,19 +227,9 @@ class DIP
     end
     
     # extract information about our files                            
-    id_list.each do |file_node|
-      
-      file = file_node.xpath('mets:FLocat/@xlink:href', NS).first.content
-      full_file_path = File.join(rel_path(global), file) 
-      oid = dfid_map[:"#{file_node['ID']}"]
-      format = file_format(file_node['ADMID'], global)
-      event_list = events(oid, global)
-            
-      rep.add_file( file_node['CHECKSUM'], full_file_path, oid )
-      rep.add_events(event_list, format) if not event_list.empty?
-    end
-    
-    rep.add_events(events(@ieid), nil) unless (global or events(@ieid).empty?)
+    populate_representation!(rep, id_list, @dfid_map, rel_path(global), doc)
+        
+    rep.add_events(events(@ieid, doc)) unless (global or events(@ieid, doc).empty?)
     rep = load_representation(type, true, rep) unless global
     rep
   end
@@ -248,6 +240,20 @@ class DIP
 
   def load_current_representation
     migration_map.nil? ? @original_representation : load_representation('ACTIVE')    
+  end
+  
+  # Add files and related events info into a representation based on IEIDs
+  def populate_representation!(rep, id_list, dmap, path, descriptor)
+    id_list.each do |file_node|
+      
+      # Look up information about each file
+      results = file_info(file_node, path, dmap, descriptor)
+      rep.add_file(results[:sum], results[:path], results[:oid], results[:format])
+      
+      # Look up related events and add them
+      evs = events(results[:oid], descriptor)
+      rep.add_events(evs) unless evs.empty?
+    end
   end
     
 end
