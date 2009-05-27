@@ -13,7 +13,10 @@
   <ns prefix="xlink" uri="http://www.w3.org/1999/xlink" />
   <ns prefix="xsi" uri="http://www.w3.org/2001/XMLSchema-instance" />
 
-  <pattern name="PREMIS Elements Required by TIPR">
+  <pattern>
+  
+    <title>PREMIS Elements Required by TIPR</title>
+  
     <rule context="premis:premis">
       <assert test="count(premis:object[@xsi:type='representation'])=1">
         There should one representation object

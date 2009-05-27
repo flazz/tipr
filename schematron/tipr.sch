@@ -14,7 +14,10 @@
 
   <xsl:key name="file_ids" match="//mets:fptr" use="@FILEID"/>
 
-  <pattern name="METS Elements Required by TIPR">
+  <pattern>
+  
+    <title>METS Elements Required by TIPR</title>
+  
     <rule context = "mets:mets">
       <assert test="@OBJID">
         There should be an OBJID (the TIPR creator's package identifier)
@@ -37,7 +40,9 @@
     </rule>
   </pattern>
 
-  <pattern name="metsHdr Content and Attributes">
+  <pattern>
+    
+    <title>METS Header Content and Attributes</title>
 
     <rule context="mets:mets/mets:metsHdr">
       <assert test="@CREATEDATE">
@@ -69,7 +74,9 @@
 
   </pattern>
   
-  <pattern name="The amdSec Content">
+  <pattern>
+
+    <title>The amdSec Content</title>
 
     <rule context="mets:mets/mets:amdSec">
       <assert test="count(mets:rightsMD)=1">
@@ -115,7 +122,9 @@
 
   </pattern>
   
-  <pattern name="The fileSec Content">
+  <pattern>
+
+    <title>The fileSec Content</title>
 
     <rule context="mets:mets/mets:fileSec">
       <assert test="count(mets:fileGrp)=2">
@@ -168,7 +177,9 @@
 
   </pattern>
   
-  <pattern name="The structMap Content">
+  <pattern>
+
+  <title>The structMap Content</title>
 
     <rule context="mets:mets/mets:structMap/mets:div">
       <assert test="count(mets:div)>=1">
