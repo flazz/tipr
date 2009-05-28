@@ -148,11 +148,14 @@
     </rule>
     
     <rule context="mets:mets/mets:fileSec/mets:fileGrp[@USE='METADATA']">
-      <assert test="count(mets:file)=1">
-        There should only be one file described in the metadata file group
+      <assert test="count(mets:file)=2">
+        There should only be two files described in the metadata file group
       </assert>
       <assert test="mets:file/mets:FLocat[@xlink:href='tipr-rights.xml']">
         The TIPR rights file should be described in the metadata file group
+      </assert>
+      <assert test="mets:file/mets:FLocat[@xlink:href='tipr-digiprov.xml']">
+        The TIPR digiprov file should be described in the metadata file group
       </assert>
     </rule>
     
