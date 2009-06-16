@@ -24,7 +24,7 @@
   
 <%# Print out file objects      %>
   <!-- File objects -->
-<% @files.each do |file| %>
+<% @files.values.each do |file| %>
 <%   if file[:oid].strip != @package_id %>
 <%     format_name = file[:format][:name]%>
 <%     format_version = file[:format][:version]%>
@@ -50,8 +50,7 @@
 <% end %>
 
 <%# Print out events       %>
-<% @events.each do |event| %>
-<%   event[:events].each do |e|     %>
+<% @events.each do |e| %>
   <event>
   
     <!-- Converted from DAITSS schema -->
@@ -132,8 +131,7 @@
     </linkingObjectIdentifier>
 <% end %>
   </event>
-
-<%   end %>
+  
 <% end %> 
 
 <%# Jump through some hoops to print out agents properly %>

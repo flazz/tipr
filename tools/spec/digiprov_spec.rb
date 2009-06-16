@@ -75,10 +75,10 @@ XML
 
     events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
     package_events = package_event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
-    @events = [ {:events => events, :object_format => "IMG_JPEG_JFIF"}, {:events=> package_events} ]
+    @events = events | package_events
 #    @premis_schema = "http://www.loc.gov/standards/premis/v1/PREMIS-v1-1.xsd"
 #    @premis_schema = "http://www.loc.gov/standards/premis/premis.xsd"
-    @files = [ { :oid=>"F20090127_AAAAAA", :format=>{ :name=> "TIFF" } } ]
+    @files = { :F20090127_AAAAA => { :oid=>"F20090127_AAAAAA", :format=>{ :name=> "TIFF" } } }
     @agents = { 
     	        :submission => { :name=>"FIU", :project_code=>252, :type=>"organization" }, 
                 :archive => { :name => "FDA", :project_code => 1, :type => "organization" }

@@ -33,25 +33,12 @@ describe DIP do
   it "should have a current representation" do
     @dip.current_representation.should_not be_nil
   end
-
-  it "should have a way of retrieving digiprovMD events" do
-    @dip.events('F20090127_AAAAAA').should_not be_nil
-  end
   
   it "should have the AIP in its list of files" do
-    aip = @dip.original_representation.files.select do |file|
+    aip = @dip.original_representation.files.values.select do |file|
             file[:path].match(/AIP_.*_LOC\.xml\Z/)
           end
     aip.should_not be_empty
-  end
-
-  it "should have a GFP in its list of files if there are global files" do
-    if @dip.global_files?
-      gfp = @dip.original_representation.files.select do |file|
-              file[:path].match(/GFP_.*_LOC\.xml\Z/)
-            end
-      gfp.should_not be_empty
-    end
   end
   
   it "should be valid" do

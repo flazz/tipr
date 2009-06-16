@@ -16,8 +16,8 @@ require 'bagit'
 require 'set'
 require 'libxml'
 
-dpath = ARGV[0]
-tpath = ARGV[1]
+dpath, tpath, csv, gpath = ARGV
+
 sigpath = File.join(tpath, 'tipr.xml.sig')
 
 # Check arguments
@@ -26,7 +26,9 @@ raise "<PATH/TO/DIP> (#{ARGV[0]}) should exist" unless File.directory? dpath
 raise "<PATH/TO/TIPR> (#{ARGV[1]}) should exist" unless File.directory? tpath
 puts "WARNING: TIPR signature exists" if File.exists? sigpath
 
-dip = DIP.new dpath                # Our DIP
+dip = DIP.new(dpath, csv, gpath)                # Our DIP
+
+puts dip.valid? ? "DIP is valid" : "DIP is not valid"
 
 # need original and active representations and their checksums
 orep = TIPR.sha1_pair(dip.original_representation.to_s)
@@ -62,6 +64,31 @@ Dir.glob("#{dpath}/**/*") do |f|
   end
 end
 
+# Bag up any global files as [full_path, rel_path] 2ples
+
+gfiles = []
+dip.gfps.each do |gfp|
+  
+  base_dir = File.dirname(gfp.full_path)
+  
+  gfp.files.each do |f|
+    file_path = f.last.path.split('/', 2)
+    p = file_path.first == dip.package_id ? file_path.last : f.last.path
+    gfiles.push( { :old_path => File.join(base_dir, p),
+                   :new_path => File.join("files", f.last.path)
+                 } )
+  end
+end
+
+gfiles.each do |f|
+  gf = File.open(f[:old_path], 'r')
+
+  tipr_bag.add_file(f[:new_path]) do |io|
+    io.write gf.read
+  end
+
+end
+
 # validate our TIPR envelope, and representations
 [orep[:xml], arep[:xml], tipr].each do |xml|
   if TIPR.validate(xml, mets) { |message, flag| puts message }
@@ -90,7 +117,7 @@ File.delete(sigpath)
 # bag our digiprov files
 [dip.original_representation, dip.current_representation].uniq.each_with_index do |r,i|
 
-  xml = TIPR.generate_digiprov(r.events, r.ieid, i+1, r.agents)
+  xml = r.digiprov[:digiprov]
   
   # bag the file    
   tipr_bag.add_file("tipr-rep-#{i+1}-digiprov.xml") { |file| file.puts xml }
@@ -103,5 +130,7 @@ File.delete(sigpath)
   end
    
 end
+
+tipr_bag.manifest!
 
 

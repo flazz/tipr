@@ -36,7 +36,6 @@ describe Representation do
 </daitss>
 XML
     @events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
-    @event_set = { :events => @events }
 
   end
 
@@ -52,13 +51,13 @@ XML
     @rep.ieid.should == 'E20081121_AAAAEW'
   end
   
-  it "should have an empty file array" do
-    @rep.files.should be_kind_of(Array)
+  it "should have an empty file hash" do
+    @rep.files.should be_kind_of(Hash)
     @rep.files.should be_empty
   end
 
   it "should have an empty event array" do
-    @rep.events.should be_kind_of(EventArray)
+    @rep.events.should be_kind_of(Array)
     @rep.events.should be_empty
   end
   
@@ -80,52 +79,10 @@ XML
   end
 
   it "should have a method for adding events" do
-    @rep.events.push(@event_set)
-    @rep.events.push( {:events => @events })
+    @rep.add_events(@events)
     @rep.events.length.should == 2
   end
   
   it "should have a method for creating xml provenance"
   
-end
-
-
-
-describe EventArray do
-  before :each do
-    event_doc = Nokogiri::XML <<XML
-<daitss xmlns="http://www.fcla.edu/dls/md/daitss/">
-  <EVENT>
-    <ID>488374</ID>
-    <OID>F20090127_AAAAAA</OID>
-    <EVENT_TYPE>CV</EVENT_TYPE>
-    <DATE_TIME>2009-01-27 14:32:12</DATE_TIME>
-    <EVENT_PROCEDURE>Checked for virus during DataFile creation</EVENT_PROCEDURE>
-    <OUTCOME>SUCCESS</OUTCOME>
-    <NOTE></NOTE>
-  </EVENT>
-  <EVENT>
-    <ID>488375</ID>
-    <OID>F20090127_AAAAAA</OID>
-    <EVENT_TYPE>VC</EVENT_TYPE>
-    <DATE_TIME>2009-01-27 14:32:13</DATE_TIME>
-    <EVENT_PROCEDURE>Verified checksum of data file</EVENT_PROCEDURE>
-    <OUTCOME>SUCCESS</OUTCOME>
-    <NOTE></NOTE>
-  </EVENT>
-</daitss>
-XML
-    @events = event_doc.xpath('//daitss:EVENT', 'daitss' => "http://www.fcla.edu/dls/md/daitss/").to_a
-    @event_set = { :events => @events }
-    @event_array = EventArray.new
-  end
-  
-  it "should not allow you to add an invalid event" do
-    lambda { @event_array.push('hate to say i told you so') }.should raise_error
-    lambda { @event_array.push(@event_set.push('la di da')) }.should raise_error
-  end
-  
-  it "should allow you to add a hash with an array of Nokogiri::XML::Nodes" do
-    lambda { @event_array.push(@event_set) }.should_not raise_error
-  end
 end

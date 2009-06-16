@@ -17,7 +17,8 @@
 
   <fileSec>
     <fileGrp>
-<% @rep.files.each_with_index do |e,i| %>
+<% files = @rep.files.merge(@rep.global_files) %>
+<% files.values.each_with_index do |e,i| %>
       <file ID="file-<%= i %>" CHECKSUM="<%= e[:sha_1] %>" CHECKSUMTYPE="SHA-1">
         <FLocat LOCTYPE="URL" xlink:href="files/<%= e[:path] %>"/>
       </file>
@@ -32,7 +33,7 @@
   
   <structMap>
     <div>
-<% @rep.files.each_index do |i| %>
+<% files.values.each_index do |i| %>
       <fptr FILEID="file-<%= i %>"/>
 <% end %>
     </div>

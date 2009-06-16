@@ -11,6 +11,8 @@ require 'validatable'
 require 'digest/sha1'
 require 'valid'
 require 'tiprhelpers'
+require 'csv'
+require 'gfp'
 
 
 class DIP
@@ -30,20 +32,18 @@ class DIP
   
   
   attr_reader :ieid, :package_id, :create_date, :original_representation, 
-              :current_representation, :migration_map
+              :current_representation, :migration_map, :gfps
   
 
-  def initialize(path)
+  def initialize(path, global_csv=nil, global_pkgs_path=nil)
     @path = path.chomp('/')     # Strip any trailing /es
     @descriptor_path = load_descriptor_path
-    @global_descriptor_path = load_descriptor_path(true)
     @doc = load_descriptor
-    @global_doc = load_descriptor(true)
     @ieid = load_ieid(@doc)
     @package_id = load_package_id
     @create_date = load_create_date
+    @gfps = load_gfps(global_csv, global_pkgs_path)    
     @dfid_map  = load_dfid_map(@doc)
-    @global_dfid_map = load_dfid_map(@global_doc) unless @global_doc.nil?
     @migration_map = load_migration_map
     @submitting_agent = load_submitting_agent
     @original_representation = load_original_representation
@@ -51,7 +51,7 @@ class DIP
   end
   
   def global_files?
-    @global_doc ? true : false
+    @gfps ? true : false
   end
     
   def package_path
@@ -62,31 +62,67 @@ class DIP
   # Returns an array of [path, sha_1] pairs for each distinct file in the
   # package
   def files
-    @original_representation.files | @current_representation.files
+    @original_representation.files.values | @current_representation.files.values
+  end
+  
+  def global_files
+    global_files? ? @gfps.inject({}) { |files, gfp| files.merge gfp.files } : nil
+  end
+  
+  def global_events
+    global_files? ? @gfps.inject([]) { |events, gfp| events.concat gfp.events } : nil
   end
 
   protected
   
+  def load_gfps(csv, path)
+    return nil unless csv and path
+    
+    gfp_list = []
+    # Only get files that relate to this DIP
+    gfp_files = CSV.readlines(csv).select { |l| l[0] == @ieid }
+    
+    # Get a short list of the related GFPs
+    gfps = gfp_files.inject([]) { |list, l| list.push(l[1]) }
+    gfps.uniq!
+    
+    # Go through the GFPs one by one and create GFPartials for each.
+    gfps.each do |gfp|
+      # Get the GFP descriptor
+      matches = Dir.glob(File.join(path, gfp, 'GFP_*_LOC.xml'))      
+      raise "No global descriptor found for #{gfp}" if matches.empty?
+      descriptor = matches.first
+      
+      # Create the list of files
+      file_list = gfp_files.select { |l| l[1] == gfp } 
+      files = file_list.inject([]) { |list, line| list.push(line[3]) }
+      files.uniq!
+      
+      # Add our GFP to our gfp list
+      gfp_list.push(GFPartial.new(descriptor, files, @package_id))
+    end
+    
+    gfp_list
+    
+  end  
+  
   # Get the relative path to a dip file
-  def rel_path(global=false)    
-    path = global ? "#{@path}/*/GFP_*_LOC.xml" : "#{@path}/*/AIP_*_LOC.xml"
-    matches = Dir.glob(path)
-    dir = File.dirname(matches.first)
+  def rel_path   
+    dir = File.dirname(@descriptor_path)
     dir.split("DIPs/").last
   end
   
-  def load_descriptor_path(global=false)
-    desc_path = global ? "#{@path}/*/GFP_*_LOC.xml" : "#{@path}/*/AIP_*_LOC.xml"
+  def load_descriptor_path
+    desc_path = "#{@path}/*/AIP_*_LOC.xml"
     matches = Dir.glob(desc_path)
-    raise 'No descriptor found' if not global and matches.empty?
+    raise 'No descriptor found' if matches.empty?
     raise 'Multiple possible descriptors' if matches.size > 1
-    matches.empty? ? nil : matches.first
+    matches.first
   end
   
-  # Load a descriptor -- for now, allow nonexistent global file descriptors
-  def load_descriptor(global=false)
-    descriptor = global ? @global_descriptor_path : @descriptor_path
-    open(descriptor) { |io| Nokogiri::XML io } if descriptor
+  # Load a descriptor
+  def load_descriptor
+    open(@descriptor_path) { |io| Nokogiri::XML io }
   end
     
   def load_package_id
@@ -138,35 +174,24 @@ class DIP
   end
   
   # Load our representation  
-  def load_representation(type, global=false, rep=nil)
+  def load_representation(type)
 
-    # Select the appropriate descriptor and dfid_map
-    doc = global ? @global_doc : @doc
-    dfid_map = global ? @global_dfid_map : @dfid_map
-    
-    return rep unless doc
-    
-    # Create a new representation if we weren't provided with one
+    # Create a new representation
     rep = Representation.new(type, @ieid, @create_date, @package_id, 
-                             @submitting_agent) unless rep
-                             
-    # And add our descriptor to the representation
-    descriptor = global ? @global_descriptor_path : @descriptor_path
-    
-    # Create an arbitrary OID for the descriptor, and set the format to XML
-    if descriptor
-      descriptor_name = descriptor.split('/').last
-      digest = Digest::SHA1.hexdigest(File.read(descriptor))
-      descriptor_path = File.join(rel_path(global), descriptor_name)
-      rep.add_file(digest, descriptor_path, @ieid + "_AIP", 
-                  { :name => "XML", :version=> "1.0" } )
-    end
-    
+                             @submitting_agent, global_files, global_events)
+
+    # Add our AIP descriptor to the representation
+    # Create an arbitrary OID and set the format to XML
+    descriptor_name = @descriptor_path.split('/').last
+    digest = Digest::SHA1.hexdigest(File.read(@descriptor_path))
+    descriptor_path = File.join(rel_path, descriptor_name)
+    rep.add_file(digest, descriptor_path, @ieid + "_AIP", 
+                { :name => "XML", :version=> "1.0" } )
     
     # Create a basic list of file IDs
-    id_list = doc.xpath('//mets:file', NS)
+    id_list = @doc.xpath('//mets:file', NS)
     
-    unless global or @migration_map.nil? # Don't log any global migrations
+    unless @migration_map.nil?
       case type
             
         when 'ORIG'     
@@ -182,11 +207,10 @@ class DIP
       end
     end
     
+    rep.add_events(events(@ieid, @doc)) unless events(@ieid, @doc).empty?
     # extract information about our files                            
-    populate_representation!(rep, id_list, @dfid_map, rel_path(global), doc)
-        
-    rep.add_events(events(@ieid, doc)) unless (global or events(@ieid, doc).empty?)
-    rep = load_representation(type, true, rep) unless global
+    populate_representation!(rep, id_list, @dfid_map, rel_path)
+    rep.load_events(@doc)
     rep
   end
   
@@ -199,15 +223,15 @@ class DIP
   end
   
   # Add files and related events info into a representation based on IEIDs
-  def populate_representation!(rep, id_list, dmap, path, descriptor)
+  def populate_representation!(rep, id_list, dmap, path)
     id_list.each do |file_node|
       
       # Look up information about each file
-      results = file_info(file_node, path, dmap, descriptor)
+      results = file_info(file_node, path, dmap, @doc)
       rep.add_file(results[:sum], results[:path], results[:oid], results[:format])
       
       # Look up related events and add them
-      evs = events(results[:oid], descriptor)
+      evs = events(results[:oid], @doc)
       rep.add_events(evs) unless evs.empty?
     end
   end
