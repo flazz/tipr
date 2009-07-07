@@ -1,5 +1,6 @@
 require 'time'
 require 'dip'
+require 'tipr'
 
 # A model for a DAITSS AIP that provides functionality for
 # constructing a TIPR package
@@ -43,5 +44,11 @@ describe DIP do
   
   it "should be valid" do
     @dip.should be_valid
+  end
+  
+  it "should have a method to generate TIPR digiprov and the related checksum" do
+    prov = @dip.digiprov
+    prov[:sha_1].should_not be_nil
+    prov[:xml].should_not be_nil
   end
 end
