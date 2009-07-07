@@ -118,6 +118,13 @@ module TIPR
     @active = active
     gen_xml('tipr.xml.erb')
   end
+  
+  # Generates the RXP package-level provenance (tipr-digiprov.xml)
+  def self.generate_tipr_provenance(dip, rxp)
+    @dip = dip
+    @rxp = rxp
+    gen_xml('tipr-digiprov.xml.erb')
+  end
 
   # Generates digiprov xml for a list of events
   # 

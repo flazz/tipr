@@ -36,6 +36,7 @@ arep = TIPR.sha1_pair(dip.current_representation.to_s)
 
 # need tipr envelope
 tipr = TIPR.generate_tipr_envelope(dip, orep, arep)
+tdpmd = TIPR.generate_tipr_digiprov(dip.digiprov)
 
 # our schemas for validation
 mets = LibXML::XML::Schema.new("http://www.loc.gov/standards/mets/mets.xsd")
@@ -103,6 +104,7 @@ tipr_bag.add_file("tipr-rep-1.xml") { |file| file.puts orep[:xml] }
 tipr_bag.add_file("tipr-rep-2.xml") { |file| file.puts arep[:xml] } if orep != arep
 tipr_bag.add_file("tipr.xml") { |file| file.puts tipr }
 tipr_bag.add_file("tipr-rights.xml") {}
+tipr_bag.add_file("tipr-digiprov.xml") { |file| file.puts tdpmd[:xml] }
 
 # sign tipr.xml
 puts "Creating TIPR signature...."

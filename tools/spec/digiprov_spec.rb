@@ -85,7 +85,7 @@ XML
               }
     
     raw_xml = TIPR.generate_digiprov(@events, 'E20090127_AAAAAA', 1, @agents, @files)
-    @doc = Nokogiri::XML raw_xml, nil, nil, Nokogiri::XML::PARSE_NOBLANKS
+    @doc = Nokogiri::XML raw_xml, nil, nil, Nokogiri::XML::ParseOptions::NOBLANKS
     
   end
 

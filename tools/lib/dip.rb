@@ -11,9 +11,12 @@ require 'validatable'
 require 'digest/sha1'
 require 'valid'
 require 'tiprhelpers'
+require 'tipr'
 require 'csv'
 require 'gfp'
 
+# An object to hold old TIPR information, if it exists
+RXP = Struct.new(:objects, :events, :agents)
 
 class DIP
   include Validatable
@@ -39,6 +42,7 @@ class DIP
     @path = path.chomp('/')     # Strip any trailing /es
     @descriptor_path = load_descriptor_path
     @doc = load_descriptor
+    @rxp = load_rxp
     @ieid = load_ieid(@doc)
     @package_id = load_package_id
     @create_date = load_create_date
@@ -48,6 +52,7 @@ class DIP
     @submitting_agent = load_submitting_agent
     @original_representation = load_original_representation
     @current_representation = load_current_representation
+
   end
   
   def global_files?
@@ -71,6 +76,11 @@ class DIP
   
   def global_events
     global_files? ? @gfps.inject([]) { |events, gfp| events.concat gfp.events } : nil
+  end
+  
+  # Create a hash of the XML and checksum of our TIPR-level provenance.
+  def digiprov
+    TIPR.sha1_pair(TIPR.generate_tipr_provenance(self, @rxp))
   end
 
   protected
@@ -123,6 +133,11 @@ class DIP
   # Load a descriptor
   def load_descriptor
     open(@descriptor_path) { |io| Nokogiri::XML io }
+  end
+
+  def load_rxp
+    # TODO: pull the RXP from DAITSS 2
+    RXP.new(nil, nil, nil)
   end
     
   def load_package_id

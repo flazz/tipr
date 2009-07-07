@@ -16,7 +16,7 @@
 
      def matches?(target)
        @target = target            # a node
-       prefix = @target.namespace
+       prefix = @target.namespace.prefix
        @target_namespace = @target.namespaces[ prefix ? "xmlns:#{prefix}" : 'xmlns' ]
        @target_namespace == @expected
      end
