@@ -201,7 +201,7 @@ class DIP
     digest = Digest::SHA1.hexdigest(File.read(@descriptor_path))
     descriptor_path = File.join(rel_path, descriptor_name)
     rep.add_file(digest, descriptor_path, @ieid + "_AIP", 
-                { :name => "XML", :version=> "1.0" } )
+                { :name => "xml", :version=> "1.0" } )
     
     # Create a basic list of file IDs
     id_list = @doc.xpath('//mets:file', NS)
