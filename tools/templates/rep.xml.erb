@@ -19,7 +19,8 @@
     <fileGrp>
 <% files = @rep.files.merge(@rep.global_files) %>
 <% files.values.each_with_index do |e,i| %>
-      <file ID="file-<%= i %>" CHECKSUM="<%= e[:sha_1] %>" CHECKSUMTYPE="SHA-1">
+      <file ID="file-<%= i %>" OWNERID='info:fcla/daitss/<%= "#{@rep.package_id}" %>/representation/<%= "#{mynum}" %>/<%= e[:oid] %>' 
+            CHECKSUM="<%= e[:sha_1] %>" CHECKSUMTYPE="SHA-1">
         <FLocat LOCTYPE="URL" xlink:href="files/<%= e[:path] %>"/>
       </file>
 <% end %>

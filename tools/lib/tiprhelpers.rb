@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'tipr'
 
 # Some shared functionality when generating a TIPR DIP from the AIP and GFPs
 module TIPRHelpers
@@ -61,7 +62,7 @@ module TIPRHelpers
     format = file_format(file_node['ADMID'], descriptor)
     
     { :sum => file_node['CHECKSUM'], :oid => oid, :path => full_file_path,
-      :format => format }
+      :format => DAITSS_FORMATS[:"#{format}"] }
   end
 
 end

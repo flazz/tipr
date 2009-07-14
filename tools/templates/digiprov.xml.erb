@@ -123,9 +123,7 @@
         info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%= "#{@rep_num}" %>/<%= e.xpath("./daitss:REL_OID", xmlns).first.content %>
       </linkingObjectIdentifierValue>
         <linkingObjectRole>
-          <!-- A nice description of the related file's role
-               FIXME: check to make sure we address all potential relationships
-            -->
+          <!-- A nice description of the related file's role -->
           <%= DAITSS_ROLES[:"#{e.xpath('./daitss:EVENT_TYPE', xmlns).first.content}"] %>
         </linkingObjectRole>
     </linkingObjectIdentifier>
