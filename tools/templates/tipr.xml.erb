@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mets xmlns="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd"
       OBJID="info:fcla/daitss/<%= @dip.ieid %>">
 
   <metsHdr CREATEDATE="<%= @dip.create_date.xmlschema %>">
     <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
       <name>FCLA</name>
-      <note>tipr-1.0.0</note>
+      <note>rxp-1.0.0</note>
     </agent>
   </metsHdr>
   

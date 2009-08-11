@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<premis xmlns="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
+<premis xmlns="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd"
+        version="2.0">
 
 <% require 'time' %>
 <% if @rxp.objects %>
@@ -22,8 +24,8 @@
   
   <event>
     <eventIdentifier>
-      <eventIdentifierType></eventIdentifierType>
-      <eventIdentifierValue></eventIdentifierValue>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>info:fcla/daitss/<%= "#{@dip.ieid}" %>/rxp/dissemination</eventIdentifierValue>
     </eventIdentifier>
     <eventType>dissemination</eventType> 
     <eventDateTime><%= Time.now.xmlschema %></eventDateTime>
