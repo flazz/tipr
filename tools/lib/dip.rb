@@ -35,7 +35,7 @@ class DIP
   
   
   attr_reader :ieid, :package_id, :create_date, :original_representation, 
-              :current_representation, :migration_map, :gfps
+              :current_representation, :migration_map, :gfps, :rxp
   
 
   def initialize(path, global_csv=nil, global_pkgs_path=nil)

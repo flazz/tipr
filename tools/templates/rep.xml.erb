@@ -7,13 +7,13 @@
   <metsHdr CREATEDATE="<%= @rep.create_date.xmlschema %>">
     <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
       <name>FCLA</name>
-      <note>tipr-1.0.0</note>
+      <note>rxp-1.0.0</note>
     </agent>
   </metsHdr>
   <% mynum = @rep.type=='ORIG'? 1 : 2 %>
   <amdSec>
     <digiprovMD ID="DPMD1">
-      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="tipr-rep-<%= mynum %>-digiprov.xml"/>
+      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="rxp-rep-<%= mynum %>-digiprov.xml"/>
     </digiprovMD>
   </amdSec>
 
@@ -29,7 +29,7 @@
     </fileGrp>
     <fileGrp USE='METADATA'>
       <file ID="REP-DPMD" CHECKSUM="<%= @rep.digiprov[:sha_1] %>" CHECKSUMTYPE="SHA-1">
-        <FLocat LOCTYPE="URL" xlink:href="tipr-rep-<%= mynum %>-digiprov.xml"/>
+        <FLocat LOCTYPE="URL" xlink:href="rxp-rep-<%= mynum %>-digiprov.xml"/>
       </file>
     </fileGrp>
   </fileSec>

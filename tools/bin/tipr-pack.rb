@@ -18,7 +18,7 @@ require 'libxml'
 
 dpath, tpath, csv, gpath = ARGV
 
-sigpath = File.join(tpath, 'tipr.xml.sig')
+sigpath = File.join(tpath, 'rxp.xml.sig')
 
 # Check arguments
 raise "Usage: ./tipr-pack.rb <PATH/TO/DIP> <PATH/TO/TIPR>" unless (dpath && tpath)
@@ -36,7 +36,7 @@ arep = TIPR.sha1_pair(dip.current_representation.to_s)
 
 # need tipr envelope
 tipr = TIPR.generate_tipr_envelope(dip, orep, arep)
-tdpmd = TIPR.generate_tipr_digiprov(dip.digiprov)
+tdpmd = dip.digiprov
 
 # our schemas for validation
 mets = LibXML::XML::Schema.new("http://www.loc.gov/standards/mets/mets.xsd")
@@ -100,20 +100,20 @@ end
 end
 
 # bag our TIPR files
-tipr_bag.add_file("tipr-rep-1.xml") { |file| file.puts orep[:xml] }
-tipr_bag.add_file("tipr-rep-2.xml") { |file| file.puts arep[:xml] } if orep != arep
-tipr_bag.add_file("tipr.xml") { |file| file.puts tipr }
-tipr_bag.add_file("tipr-rights.xml") {}
-tipr_bag.add_file("tipr-digiprov.xml") { |file| file.puts tdpmd[:xml] }
+tipr_bag.add_file("rxp-rep-1.xml") { |file| file.puts orep[:xml] }
+tipr_bag.add_file("rxp-rep-2.xml") { |file| file.puts arep[:xml] } if orep != arep
+tipr_bag.add_file("rxp.xml") { |file| file.puts tipr }
+tipr_bag.add_file("rxp-rights.xml") {}
+tipr_bag.add_file("rxp-digiprov.xml") { |file| file.puts tdpmd[:xml] }
 
 # sign tipr.xml
-puts "Creating TIPR signature...."
-gpg_code = system("gpg -b -o #{sigpath} #{tpath}/tipr_bag/data/tipr.xml")
+puts "Creating RXP signature...."
+gpg_code = system("gpg -b -o #{sigpath} #{tpath}/tipr_bag/data/rxp.xml")
 raise "Error writing signature" unless gpg_code
 
 # add the sig to our bag and clean up
 sig = File.open(sigpath, 'r')
-tipr_bag.add_file("tipr.xml.sig"){ |io| io.puts sig.read }
+tipr_bag.add_file("rxp.xml.sig"){ |io| io.puts sig.read }
 File.delete(sigpath)
 
 # bag our digiprov files
@@ -122,7 +122,7 @@ File.delete(sigpath)
   xml = r.digiprov[:digiprov]
   
   # bag the file    
-  tipr_bag.add_file("tipr-rep-#{i+1}-digiprov.xml") { |file| file.puts xml }
+  tipr_bag.add_file("rxp-rep-#{i+1}-digiprov.xml") { |file| file.puts xml }
   
   # validate the xml
   if TIPR.validate(xml, premis) { |message, flag| puts message }
