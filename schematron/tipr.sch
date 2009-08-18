@@ -5,7 +5,7 @@
   
   <title>Repository eXchange Package Envelope (rxp.xml) schematron</title>
 
-  <!-- rxp.xml should always follow the METS schema. Additional requirements 
+  <!-- rxp.xml must always follow the METS schema. Additional requirements 
        are outlined by this schematron 
     -->
 
@@ -28,9 +28,9 @@
       <assert test="count(mets:amdSec)=1">
         There must be one amdSec
       </assert>
-      <report test="mets:dmdSec">
-        This tipr.xml has a dmdSec (not required)
-      </report>
+      <assert test="count(mets:dmdSec)=0">
+        There must not be a dmdSec
+      </assert>
       <assert test="count(mets:fileSec)=1">
         There must be one fileSec
       </assert>
@@ -45,9 +45,9 @@
     <title>METS Header Content and Attributes</title>
 
     <rule context="mets:mets/mets:metsHdr">
-      <assert test="@CREATEDATE">
+      <report test="not(@CREATEDATE)">
         The METS Header should have a CREATEDATE
-      </assert>
+      </report>
       <assert test="count(mets:agent)=1">
         The METS Header must have one agent
       </assert>
@@ -60,11 +60,11 @@
       <assert test="@TYPE='ORGANIZATION'">
         The agent type must be ORGANIZATION
       </assert>
-      <assert test="mets:name[text() != '']">
-        The agent should have a name
+      <assert test="mets:name[normalize-space(text()) != '']">
+        The agent must have a name
       </assert> 
       <assert test="mets:note[text()='rxp-1.0.0']">
-        The rxp version should be 1.0.0
+        The rxp version must be 1.0.0
       </assert>
     </rule>
 
@@ -75,14 +75,14 @@
     <title>The amdSec Content</title>
 
     <rule context="mets:mets/mets:amdSec">
-      <assert test="count(mets:rightsMD)=1">
+      <report test="count(mets:rightsMD)!=1">
         There should be one rightsMD section
-      </assert>
+      </report>
       <assert test="count(mets:digiprovMD)=1">
         There must be one digiprovMD section
       </assert>
-      <assert test="count(child::*)=2">
-        There should only be one rightsMD and one digiprovMD in the amdSec
+      <assert test="count(child::*)=1 or count(child::*)=2">
+        There must only be one digiprovMD and at most one rightsMD in the amdSec
       </assert>
     </rule>
     
@@ -139,19 +139,21 @@
         Representation files must have 'rxp-rep-' prefix
       </assert>
       <assert test="key('file_ids', mets:file/@ID)">
-        Files in the fileSec should be referenced in the structMap
+        Files in the fileSec must be referenced in the structMap
       </assert>
     </rule>
     
     <rule context="mets:mets/mets:fileSec/mets:fileGrp[@USE='METADATA']">
-      <assert test="count(mets:file)=2">
-        There should only be two files described in the metadata file group
+      <assert test="count(mets:file)=1 or count(mets:file)=2">
+        There must only be at most two files described in the metadata file group
       </assert>
-      <assert test="mets:file/mets:FLocat[@xlink:href='tipr-rights.xml']">
-        The TIPR rights file should be described in the metadata file group
+      <assert test="count(mets:file/mets:FLocat[@xlink:href='rxp-rights.xml']) = 
+                    count(parent::node()/parent::node()/mets:amdSec/mets:rightsMD)">
+        The RXP rights file should be in a rightsMD section and described in the
+        metadata file group
       </assert>
-      <assert test="mets:file/mets:FLocat[@xlink:href='tipr-digiprov.xml']">
-        The TIPR digiprov file should be described in the metadata file group
+      <assert test="mets:file/mets:FLocat[@xlink:href='rxp-digiprov.xml']">
+        The RXP digiprov file must be described in the metadata file group
       </assert>
     </rule>
     
@@ -188,7 +190,7 @@
         There must be one active representation (TYPE='ACTIVE')
       </assert>
       <assert test="count(mets:div[not(@ORDER=preceding-sibling::*/@ORDER)])=count(mets:div/@ORDER)">
-        No representations should share the same order
+        No representations may share the same order
       </assert>
     </rule>
     

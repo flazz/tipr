@@ -26,11 +26,11 @@
         There must be one METS Header
       </assert>
       <assert test="count(mets:amdSec)=1">
-        There should be one amdSec
+        There must be one amdSec
       </assert>
-      <report test="mets:dmdSec">
-        This representation has a dmdSec (not required)
-      </report>
+      <assert test="count(mets:dmdSec)=0">
+        There must not be a dmdSec
+      </assert>
       <assert test="count(mets:fileSec)=1">
         There should be one fileSec
       </assert>
@@ -45,9 +45,9 @@
     <title>metsHdr Content and Attributes</title>
 
     <rule context="mets:mets/mets:metsHdr">
-      <assert test="@CREATEDATE">
+      <report test="not(@CREATEDATE)">
         The METS Header should have a CREATEDATE
-      </assert>
+      </report>
       <assert test="count(mets:agent)=1">
         The METS Header must have one agent
       </assert>
@@ -60,8 +60,8 @@
       <assert test="@TYPE='ORGANIZATION'">
         The agent type must be ORGANIZATION
       </assert>
-      <assert test="mets:name[text() != '']">
-        The agent should have a name
+      <assert test="mets:name[normalize-space(text()) != '']">
+        The agent must have a name
       </assert> 
       <assert test="mets:note[text()='rxp-1.0.0']">
         The rxp version must be 1.0.0
@@ -123,6 +123,10 @@
       <assert test="mets:file/mets:FLocat[starts-with(@xlink:href, 'files/')]">
         All files in this representation must be in the files directory
       </assert>
+      <report test="count(mets:file/@OWNERID)!=count(mets:file)">
+        Each representation file should have an OWNERID attribute with a URI 
+        which matches the identifier in the RXP representation provenance.
+      </report>
     </rule>
     
     <rule context="mets:mets/mets:fileSec/mets:fileGrp[@USE='METADATA']">
@@ -135,7 +139,7 @@
     </rule>
     
     <rule context="mets:mets/mets:fileSec/mets:fileGrp/mets:file">
-      <assert test="@ID">All files in the fileSec should have an ID</assert>
+      <assert test="@ID">All files in the fileSec must have an ID</assert>
       <assert test="@CHECKSUM and @CHECKSUMTYPE='SHA-1'">
         All files in the fileSec must have sha-1 checksums
       </assert>

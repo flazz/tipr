@@ -24,9 +24,9 @@
       <assert test="count(premis:object[@xsi:type='file' or 'bitstream'])>=1" >
         There must one at least one file or bitstream object
       </assert>
-      <assert test="count(premis:agent)>=1">
+      <report test="count(premis:agent)=0">
         There should be at least one agent
-      </assert>
+      </report>
     </rule>
 
     <rule context="//premis:objectIdentifier">
