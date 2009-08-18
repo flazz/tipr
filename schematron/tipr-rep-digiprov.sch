@@ -31,10 +31,10 @@
 
     <rule context="//premis:objectIdentifier">
       <assert test="premis:objectIdentifierType[normalize-space(text())='URI']">
-        Object identifier type should be URI
+        Object identifier type must be URI
       </assert>
       <assert test="self::*[normalize-space(premis:objectIdentifierValue) != '']">
-        The object identifier value should not be empty
+        The object identifier value must not be empty
       </assert>
     </rule>
     

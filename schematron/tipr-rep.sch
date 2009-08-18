@@ -32,10 +32,10 @@
         There must not be a dmdSec
       </assert>
       <assert test="count(mets:fileSec)=1">
-        There should be one fileSec
+        There must be one fileSec
       </assert>
       <assert test="count(mets:structMap)=1">
-        There should be one structMap
+        There must be one structMap
       </assert>
     </rule>
   </pattern>
@@ -94,7 +94,7 @@
         The provenance URL must point to rxp-rep-x-digiprov.xml
       </assert>
       <assert test="mets:mdRef[contains(@xlink:href, '-digiprov.xml')]">
-        The provenance URL should point to rxp-rep-x-digiprov.xml
+        The provenance URL must point to rxp-rep-x-digiprov.xml
       </assert>
     </rule>
 
