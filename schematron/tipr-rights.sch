@@ -3,9 +3,9 @@
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         queryBinding='xslt' schemaVersion='ISO19757-3'>
   
-  <title>TIPR Rights (tipr-rights.xml) schematron</title>
+  <title>RXP Rights (rxp-rights.xml) schematron</title>
 
-  <!-- tipr-rights.xml should always follow the PREMIS 2.0 schema. 
+  <!-- rxp-rights.xml should always follow the PREMIS 2.0 schema. 
        Additional requirements are outlined by this schematron.
     -->
 
@@ -15,7 +15,7 @@
 
   <pattern>
   
-    <title>PREMIS Elements Required for TIPR Rights</title>
+    <title>PREMIS Elements Required for RXP Rights</title>
   
     <rule context="premis:premis">
       <assert test="count(premis:object[@xsi:type='representation'])=1">

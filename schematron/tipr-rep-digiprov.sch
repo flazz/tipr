@@ -3,9 +3,9 @@
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         queryBinding='xslt' schemaVersion='ISO19757-3'>
   
-  <title>TIPR Representation Provenance (tipr-rep-x-digiprov.xml) schematron</title>
+  <title>RXP Representation Provenance (rxp-rep-x-digiprov.xml) schematron</title>
 
-  <!-- tipr-rep-x-digiprov.xml should always follow the PREMIS 2.0 schema. 
+  <!-- rxp-rep-x-digiprov.xml should always follow the PREMIS 2.0 schema. 
        Additional requirements are outlined by this schematron.
     -->
 
@@ -15,14 +15,14 @@
 
   <pattern>
   
-    <title>PREMIS Elements Required by TIPR</title>
+    <title>PREMIS Elements Required by RXP</title>
   
     <rule context="premis:premis">
       <assert test="count(premis:object[@xsi:type='representation'])=1">
-        There should one representation object
+        There must one representation object
       </assert>
       <assert test="count(premis:object[@xsi:type='file' or 'bitstream'])>=1" >
-        There should one at least one file or bitstream object
+        There must one at least one file or bitstream object
       </assert>
       <assert test="count(premis:agent)>=1">
         There should be at least one agent
@@ -40,25 +40,25 @@
     
     <rule context="premis:event">
       <assert test="premis:linkingObjectIdentifier">
-        There should be a linking object identifier for each event
+        There must be a linking object identifier for each event
       </assert>
       <assert test="child::*[normalize-space(premis:linkingObjectIdentifierValue)=normalize-space(//premis:object[@xsi:type='representation']//premis:objectIdentifierValue)]">
-        Each event should link to the representation object
+        Each event must link to the representation object
       </assert>
     </rule>
 
     <rule context="premis:event/premis:linkingObjectIdentifier">
       <assert test="premis:linkingObjectIdentifierType[normalize-space(text())='URI']">
-        Linking object identifier type should be URI
+        Linking object identifier type must be URI
       </assert>
       <assert test="self::*[normalize-space(premis:linkingObjectIdentifierValue) != '']">
-        Linking object identifier value should not be empty
+        Linking object identifier value must not be empty
       </assert>    
     </rule>
 
     <rule context="premis:agent/premis:agentIdentifier">
       <assert test="premis:agentIdentifierType[normalize-space(text())='URI']">
-        Agent identifier type should be URI.
+        Agent identifier type must be URI.
       </assert>
     </rule>
         
