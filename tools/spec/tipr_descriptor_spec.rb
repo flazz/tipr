@@ -73,8 +73,8 @@ describe "the tipr descriptor" do
                                NS_MAP)
       mdfile.length.should == 1
       mdfile.first.xpath('mets:file', NS_MAP).length.should == 2
-      mdfile.first.should have_xpath('mets:file/mets:FLocat[@xlink:href="tipr-rights.xml"]')
-      mdfile.first.should have_xpath('mets:file/mets:FLocat[@xlink:href="tipr-digiprov.xml"]')
+      mdfile.first.should have_xpath('mets:file/mets:FLocat[@xlink:href="rxp-rights.xml"]')
+      mdfile.first.should have_xpath('mets:file/mets:FLocat[@xlink:href="rxp-digiprov.xml"]')
     end
   end
   

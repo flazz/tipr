@@ -74,7 +74,7 @@ share_examples_for "all representations" do
       dp = @doc.root.xpath("//mets:fileSec/mets:fileGrp[@USE='METADATA']/mets:file",
                            NS_MAP)
       dp.length.should == 1
-      dp.first.should have_xpath("mets:FLocat[@xlink:href='tipr-rep-#{@mynum}-digiprov.xml']")
+      dp.first.should have_xpath("mets:FLocat[@xlink:href='rxp-rep-#{@mynum}-digiprov.xml']")
     end
 
   end

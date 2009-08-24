@@ -44,7 +44,7 @@ share_as :AllTiprFiles do
       
       it "should have a note with the tipr version" do
         @rchildren.first.xpath('mets:agent/mets:note', 
-                NS_MAP).first.content.should == "tipr-1.0.0"
+                NS_MAP).first.content.should == "rxp-1.0.0"
       end
     end
   end
