@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets
+    xmlns:mets="http://www.loc.gov/METS/"
+    xmlns:daitss="http://www.fcla.edu/dls/md/daitss/"
+    xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.v1-8.xsd
+      http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd
+      http://www.fcla.edu/dls/md/daitss/ http://www.fcla.edu/dls/md/daitss/daitss.xsd"
+    OBJID="<%= @sip.name %>">
+  
+  <mets:amdSec ID="AMD-TIPR">
+<% if @sip.rights %>
+
+    <!-- TIPR Rights -->
+    <mets:rightsMD ID="RMD-TIPR">
+      <mets:mdWrap MDTYPE="PREMIS">
+        <mets:xmlData>
+          <%= @sip.rights.to_xml %>
+        </mets:xmlData>
+      </mets:mdWrap>
+    </mets:rightsMD>
+<% end %>
+
+    <!-- TIPR Digiprov -->
+    <mets:digiprovMD ID="DPMD-TIPR">
+      <mets:mdWrap MDTYPE="PREMIS" LABEL="RXP">
+        <mets:xmlData>
+          <%= @sip.digiprov.to_xml %>
+        </mets:xmlData>
+      </mets:mdWrap>
+    </mets:digiprovMD>
+  </mets:amdSec>
+
+  <!-- Representation rights and provenance -->
+<% @sip.representations.each_with_index do |r, i| %>  
+  <mets:amdSec ID="AMD-R<%= i %>">
+<% if r.rights %>  
+
+    <mets:rightsMD ID="RMD<%= i %>">
+      <mets:mdWrap MDTYPE="PREMIS">
+        <mets:xmlData>
+          <%= r.rights.to_xml %>
+        </mets:xmlData>
+      </mets:mdWrap>
+    </mets:rightsMD>
+<% end %>
+
+    <mets:digiprovMD ID="DPMD<%= i %>">
+      <mets:mdWrap MDTYPE="PREMIS">
+        <mets:xmlData>
+          <%= r.digiprov.to_xml %>
+        </mets:xmlData>
+      </mets:mdWrap>
+    </mets:digiprovMD>
+
+  </mets:amdSec>
+<% end %>
+  
+  
+  <mets:fileSec>
+    <mets:fileGrp>
+<% @sip.files.each_with_index do |f, i| %>    
+      <mets:file ID="FILE-<%= i %>" CHECKSUM="<%= f[:sha_1] %>" CHECKSUMTYPE="SHA-1"<% if f[:uri] %> OWNERID="<%= f[:uri] %>"<% end %>>
+        <mets:FLocat xlink:href="<%= f[:path].split(/^files\//).last %>" LOCTYPE="URL"/>
+      </mets:file>
+<% end %>
+    </mets:fileGrp>
+  </mets:fileSec>
+  
+  <mets:structMap>
+    <mets:div>
+<% @sip.representations.each_with_index do |r, i| %>
+      <mets:div ADMID="<% if r.rights %>RMD<%= i %> <% end %>DPMD<%= i %>">
+<% end %>
+    </mets:div>
+  </mets:structMap>
+ 
+</mets:mets>

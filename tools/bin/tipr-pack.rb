@@ -68,7 +68,8 @@ end
 # Bag up any global files as [full_path, rel_path] 2ples
 
 gfiles = []
-dip.gfps.each do |gfp|
+
+(dip.gfps || []).each do |gfp|
   
   base_dir = File.dirname(gfp.full_path)
   

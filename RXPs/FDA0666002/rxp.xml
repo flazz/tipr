@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets xmlns="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd"
+      OBJID="info:fcla/daitss/E20090127_AAAAAA">
+
+  <metsHdr CREATEDATE="2009-01-27T14:32:55Z">
+    <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
+      <name>FCLA</name>
+      <note>rxp-1.0.0</note>
+    </agent>
+  </metsHdr>
+  
+  <amdSec>
+    <rightsMD ID="rights-metadata-0">
+      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="rxp-rights.xml"/>
+    </rightsMD>
+    <digiprovMD ID="digiprov-metadata-0">
+      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="rxp-digiprov.xml"/>
+    </digiprovMD>
+  </amdSec>
+
+  <fileSec>
+    <fileGrp>
+      <file ID="file-0" CHECKSUM="3c490928a3472eebcfdd2eb9e0a132b0aea3be0d" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="rxp-rep-1.xml"/>
+      </file>
+      <file ID="file-1" CHECKSUM="39192571409958a2ffa986bc092230b1a9922611" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="rxp-rep-2.xml"/>
+      </file>
+    </fileGrp>  
+    <fileGrp USE='METADATA'>
+      <file ID="TIPR-RMD" CHECKSUM="da39a3ee5e6b4b0d3255bfef95601890afd80709" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="rxp-rights.xml"/>
+      </file>
+      <file ID="TIPR-DPMD" CHECKSUM="e314495edf5b97c14b23cb33f4ee424caa3f7f4b" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="rxp-digiprov.xml"/>
+      </file>
+    </fileGrp>
+  </fileSec>
+
+  <structMap>
+    <div>
+      <div  ORDER="1">
+        <fptr FILEID="file-0"/>
+      </div>
+      <div TYPE="ACTIVE" ORDER="2">
+        <fptr FILEID="file-1"/>
+      </div>
+    </div>
+  </structMap>
+  
+</mets>

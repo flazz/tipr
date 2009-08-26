@@ -16,7 +16,7 @@ require 'csv'
 require 'gfp'
 
 # An object to hold old TIPR information, if it exists
-RXP = Struct.new(:objects, :events, :agents)
+RXPInfo = Struct.new(:objects, :events, :agents)
 
 class DIP
   include Validatable
@@ -137,7 +137,7 @@ class DIP
 
   def load_rxp
     # TODO: pull the RXP from DAITSS 2
-    RXP.new(nil, nil, nil)
+    RXPInfo.new(nil, nil, nil)
   end
     
   def load_package_id

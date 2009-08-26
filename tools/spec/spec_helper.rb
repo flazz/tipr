@@ -6,6 +6,14 @@
    'xlink' => 'http://www.w3.org/1999/xlink'
  }
 
+Spec::Matchers.define :generate_a_valid_sip do
+
+  match do |rxp|
+    rxp.sip_valid?
+  end
+
+end
+ 
  module TIPRMatchers
    
    class BeInNamespace

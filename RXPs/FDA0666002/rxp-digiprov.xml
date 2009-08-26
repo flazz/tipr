@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<premis xmlns="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd"
+        version="2.0">
+
+
+  <!-- FDA RXP package name -->
+  <object xsi:type='representation'>
+    <objectIdentifier>
+      <objectIdentifierType>URI</objectIdentifierType>
+      <objectIdentifierValue>info:fcla/daitss/E20090127_AAAAAA</objectIdentifierValue>
+    </objectIdentifier>
+  </object>
+
+  
+  <event>
+    <eventIdentifier>
+      <eventIdentifierType>URI</eventIdentifierType>
+      <eventIdentifierValue>info:fcla/daitss/E20090127_AAAAAA/rxp/dissemination</eventIdentifierValue>
+    </eventIdentifier>
+    <eventType>dissemination</eventType> 
+    <eventDateTime>2009-08-26T15:04:03-04:00</eventDateTime>
+    <eventDetail>Disseminated RXP</eventDetail> 
+
+    <eventOutcomeInformation>
+      <eventOutcome>SUCCESS</eventOutcome>
+      <eventOutcomeDetail>
+        <eventOutcomeDetailNote>FDA disseminated RXP for TIPR partners</eventOutcomeDetailNote>
+      </eventOutcomeDetail>
+    </eventOutcomeInformation>
+    
+    <linkingAgentIdentifier>
+      <linkingAgentIdentifierType>URI</linkingAgentIdentifierType>
+      <linkingAgentIdentifierValue>info:fcla/daitss/agent/FDA</linkingAgentIdentifierValue>
+    </linkingAgentIdentifier>
+    
+    <linkingObjectIdentifier>
+      <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
+      <linkingObjectIdentifierValue>info:fcla/daitss/E20090127_AAAAAA</linkingObjectIdentifierValue>
+    </linkingObjectIdentifier>
+  </event>
+
+
+  <agent>
+    <agentIdentifier>
+      <agentIdentifierType>URI</agentIdentifierType>
+      <agentIdentifierValue>info:fcla/daitss/agent/FDA</agentIdentifierValue>
+    </agentIdentifier>
+    <agentName>FDA</agentName>
+    <agentType>organization</agentType>
+  </agent>
+
+  
+</premis>

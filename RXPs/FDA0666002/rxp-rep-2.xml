@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets xmlns="http://www.loc.gov/METS/" xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd"
+      OBJID="info:fcla/daitss/E20090127_AAAAAA">
+  
+  <metsHdr CREATEDATE="2009-01-27T14:32:55Z">
+    <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
+      <name>FCLA</name>
+      <note>rxp-1.0.0</note>
+    </agent>
+  </metsHdr>
+  
+  <amdSec>
+    <digiprovMD ID="DPMD1">
+      <mdRef LOCTYPE="URL" MDTYPE="PREMIS" xlink:href="rxp-rep-2-digiprov.xml"/>
+    </digiprovMD>
+  </amdSec>
+
+  <fileSec>
+    <fileGrp>
+      <file ID="file-0" OWNERID='info:fcla/daitss/FDA0666002/representation/2/F20090127_AAAAAD' 
+            CHECKSUM="256180b9df9c46ed0f791f79bb8632572e817b4b" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="files/FDA0666002/E20090127_AAAAAA/links_20090127143206/www.loc.gov/standards/mods/v3/mods-3-3.xsd"/>
+      </file>
+      <file ID="file-1" OWNERID='info:fcla/daitss/FDA0666002/representation/2/F20090127_AAAAAE' 
+            CHECKSUM="43267dbff4ae7be719c55386688dabcf861f19cc" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="files/FDA0666002/E20090127_AAAAAA/migrated_20090127143206/F20090127_AAAAAA_JPEG_JP2_1/mig.jp2"/>
+      </file>
+      <file ID="file-2" OWNERID='info:fcla/daitss/FDA0666002/representation/2/F20090127_AAAAAG' 
+            CHECKSUM="bdd8b45a6631816db76375935d6b48a0047c9fab" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="files/FDA0666002/E20090127_AAAAAA/FDA0666002_LOC.xml"/>
+      </file>
+      <file ID="file-3" OWNERID='info:fcla/daitss/FDA0666002/representation/2/F20090127_AAAAAF' 
+            CHECKSUM="0a35423f149d64042e8c73ead7a91c93782dfb6f" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="files/FDA0666002/E20090127_AAAAAA/links_20090127143206/www.loc.gov/standards/mods/v3/mods-3-3_LOC.xsd"/>
+      </file>
+      <file ID="file-4" OWNERID='info:fcla/daitss/FDA0666002/representation/2/E20090127_AAAAAA_AIP' 
+            CHECKSUM="4816bbd628fa11bccc3e1ab3aeb7a495083ecfbe" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="files/FDA0666002/E20090127_AAAAAA/AIP_20090127143255_LOC.xml"/>
+      </file>
+      <file ID="file-5" OWNERID='info:fcla/daitss/FDA0666002/representation/2/F20090127_AAAAAC' 
+            CHECKSUM="0c8e7614bad133dddfcf990eb67ae399ec8b4bca" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="files/FDA0666002/E20090127_AAAAAA/FDA0666002.xml"/>
+      </file>
+    </fileGrp>
+    <fileGrp USE='METADATA'>
+      <file ID="REP-DPMD" CHECKSUM="8accc041c38be371024904b476202ded4b64127f" CHECKSUMTYPE="SHA-1">
+        <FLocat LOCTYPE="URL" xlink:href="rxp-rep-2-digiprov.xml"/>
+      </file>
+    </fileGrp>
+  </fileSec>
+  
+  <structMap>
+    <div>
+      <fptr FILEID="file-0"/>
+      <fptr FILEID="file-1"/>
+      <fptr FILEID="file-2"/>
+      <fptr FILEID="file-3"/>
+      <fptr FILEID="file-4"/>
+      <fptr FILEID="file-5"/>
+    </div>
+  </structMap>
+
+</mets>

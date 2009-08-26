@@ -100,6 +100,7 @@
       <linkingAgentIdentifierValue>info:fcla/daitss/agent/<%= @agents[:"#{my_agent}"][:name] %></linkingAgentIdentifierValue>
     </linkingAgentIdentifier>
 <% end %>
+<% unless e.xpath("./daitss:OID", xmlns).first.content.strip == @package_id %>
     <!-- Related File Object -->
     <linkingObjectIdentifier>
       <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
@@ -107,7 +108,7 @@
         info:fcla/daitss/<%= "#{@package_id}" %>/representation/<%= "#{@rep_num}" %>/<%= e.xpath("./daitss:OID", xmlns).first.content %>
       </linkingObjectIdentifierValue>
     </linkingObjectIdentifier>
-<% if not e.xpath("./daitss:OID", xmlns).first.content.strip == @package_id %>
+<% end %>
     <!-- Related Representation Object -->
     <linkingObjectIdentifier>
       <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
@@ -116,8 +117,7 @@
       </linkingObjectIdentifierValue>
         <linkingObjectRole>associated representation</linkingObjectRole>
     </linkingObjectIdentifier>
-<% end %>
-<% if not e.xpath("./daitss:REL_OID", xmlns).empty? %>
+<% unless e.xpath("./daitss:REL_OID", xmlns).empty? %>
     <linkingObjectIdentifier>
       <linkingObjectIdentifierType>URI</linkingObjectIdentifierType>
       <linkingObjectIdentifierValue>
